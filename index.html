@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi" class="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DSB · Dynamic Service Blueprint</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL,GRAD,opsz@100..700,0..1,-50..200,20..48&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-surface": "#191c22",
+          "on-surface-variant": "#424753",
+          "surface": "#f9f9ff",
+          "surface-bright": "#ffffff",
+          "surface-dim": "#d8d9e2",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-low": "#f2f3fc",
+          "surface-container": "#ecedf6",
+          "surface-container-high": "#e7e8f1",
+          "surface-container-highest": "#e1e2eb",
+          "outline": "#727784",
+          "outline-variant": "#c2c6d5",
+          "vnd-primary-50": "#E5F2FF",
+          "vnd-primary-100": "#CCE5FF",
+          "vnd-primary-200": "#99CBFF",
+          "vnd-primary-400": "#3391F0",
+          "vnd-primary-500": "#0077ED",
+          "vnd-primary-700": "#005CBD",
+          "vnd-primary-900": "#00205B",
+          "vnd-primary-950": "#001233",
+          "vnd-accent-green": "#00C97D",
+          "vnd-accent-amber": "#FFB020",
+          "vnd-warning": "#FF8C33",
+          "vnd-danger": "#EF4444",
+          "vnd-neutral-50": "#FAFAFA",
+          "vnd-neutral-100": "#F4F4F5",
+          "vnd-neutral-950": "#0A0A0B",
+          "anvie-primary": "#FF6B35",
+          "anvie-accent": "#4ECDC4",
+          "pti-primary": "#8B2E8F",
+          "primary": "#0077ED",
+          "primary-container": "#CCE5FF",
+          "on-primary": "#ffffff",
+          "secondary-container": "#75f8b3",
+          "on-secondary-fixed-variant": "#005232",
+          "tertiary-fixed": "#ffdbcc",
+          "tertiary": "#833400",
+          "on-tertiary-fixed-variant": "#7a3000",
+          "error-container": "#ffdad6",
+          "on-error-container": "#93000a"
+        },
+        borderRadius: {
+          DEFAULT: "0.375rem",
+          sm: "0.25rem",
+          lg: "0.625rem",
+          xl: "0.875rem",
+          "2xl": "1.125rem",
+          "3xl": "1.5rem",
+          full: "9999px"
+        },
+        spacing: {
+          "unit-1": "0.25rem",
+          "unit-2": "0.5rem",
+          "unit-3": "0.75rem",
+          "unit-4": "1rem",
+          "unit-5": "1.25rem",
+          "unit-6": "1.5rem",
+          "unit-8": "2rem",
+          "unit-10": "2.5rem",
+          "unit-12": "3rem",
+          "unit-16": "4rem",
+          "margin": "2rem",
+          "gutter": "1.5rem"
+        },
+        fontFamily: {
+          sans: ["Inter", "system-ui", "sans-serif"],
+          display: ["Lexend", "Inter", "sans-serif"],
+          mono: ["JetBrains Mono", "ui-monospace", "monospace"]
+        },
+        fontSize: {
+          "label-xs": ["11px", { lineHeight: "1.4", fontWeight: "500", letterSpacing: "0.04em" }],
+          "label-sm": ["12px", { lineHeight: "1.4", fontWeight: "500" }],
+          "body-sm": ["13px", { lineHeight: "1.5", fontWeight: "400" }],
+          "body-md": ["14px", { lineHeight: "1.5", fontWeight: "400" }],
+          "body-lg": ["16px", { lineHeight: "1.55", fontWeight: "400" }],
+          "title-sm": ["14px", { lineHeight: "1.4", fontWeight: "600" }],
+          "title-md": ["16px", { lineHeight: "1.35", fontWeight: "600" }],
+          "title-lg": ["18px", { lineHeight: "1.3", fontWeight: "600" }],
+          "headline-sm": ["20px", { lineHeight: "1.3", fontWeight: "600", letterSpacing: "-0.01em" }],
+          "headline-md": ["24px", { lineHeight: "1.3", fontWeight: "600", letterSpacing: "-0.015em" }],
+          "headline-lg": ["30px", { lineHeight: "1.2", fontWeight: "700", letterSpacing: "-0.02em" }],
+          "display-sm": ["36px", { lineHeight: "1.15", fontWeight: "700", letterSpacing: "-0.025em" }],
+          "display-md": ["44px", { lineHeight: "1.1", fontWeight: "700", letterSpacing: "-0.03em" }],
+          "financial-sm": ["14px", { lineHeight: "1.4", fontWeight: "600" }],
+          "financial-md": ["18px", { lineHeight: "1.3", fontWeight: "600" }],
+          "financial-lg": ["28px", { lineHeight: "1.2", fontWeight: "700", letterSpacing: "-0.01em" }],
+          "financial-xl": ["40px", { lineHeight: "1.1", fontWeight: "700", letterSpacing: "-0.02em" }]
+        },
+        boxShadow: {
+          "xs": "0 1px 2px rgba(15, 23, 42, 0.04)",
+          "soft": "0 2px 8px -2px rgba(15, 23, 42, 0.06), 0 6px 18px -8px rgba(15, 23, 42, 0.08)",
+          "lift": "0 10px 30px -12px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(15, 23, 42, 0.04)",
+          "brand": "0 10px 30px -10px rgba(0, 119, 237, 0.45)"
+        }
+      }
+    }
+  };
+</script>
+<style>
+  html, body, #root { height: 100%; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #f2f3fc;
+    color: #191c22;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+  .font-display { font-family: 'Lexend', sans-serif; letter-spacing: -0.01em; }
+  .font-mono   { font-family: 'JetBrains Mono', monospace; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    user-select: none;
+  }
+  .ico-fill { font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+  .ico-bold { font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24; }
+  /* Hide scrollbar utility */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+  /* Thin scrollbar */
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #c2c6d5; border-radius: 99px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  /* Mesh background for hero areas */
+  .bg-mesh-blue {
+    background-image:
+      radial-gradient(at 20% 10%, rgba(0, 119, 237, 0.18) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(0, 201, 125, 0.12) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(255, 176, 32, 0.10) 0px, transparent 50%),
+      radial-gradient(at 80% 80%, rgba(0, 119, 237, 0.10) 0px, transparent 50%);
+  }
+  .bg-mesh-dark {
+    background-color: #001233;
+    background-image:
+      radial-gradient(at 20% 10%, rgba(51, 145, 240, 0.40) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(0, 201, 125, 0.18) 0px, transparent 50%),
+      radial-gradient(at 80% 80%, rgba(139, 46, 143, 0.30) 0px, transparent 50%);
+  }
+  /* Subtle striped placeholder image */
+  .img-placeholder {
+    background-image:
+      repeating-linear-gradient(135deg, rgba(0,32,91,0.06) 0 8px, transparent 8px 16px),
+      linear-gradient(180deg, #eef2ff, #e1e7ff);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: rgba(0,32,91,0.55); letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  /* Kanban drag affordance */
+  .kanban-card[draggable="true"]:active { cursor: grabbing; }
+  /* Animations */
+  @keyframes pulse-soft { 0%,100% { opacity: .5 } 50% { opacity: 1 } }
+  .animate-pulse-soft { animation: pulse-soft 2.2s ease-in-out infinite; }
+  @keyframes fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .animate-fade-in { animation: fade-in .25s ease-out both; }
+  @keyframes slide-in-right { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .animate-slide-in { animation: slide-in-right .28s cubic-bezier(.2,.7,.2,1) both; }
+  /* Skill ring */
+  .ring-track { stroke: #e1e2eb; }
+  .ring-fill  { stroke: #0077ED; transition: stroke-dashoffset .6s cubic-bezier(.2,.7,.2,1); }
+  /* Focus ring */
+  *:focus-visible { outline: 2px solid #0077ED; outline-offset: 2px; border-radius: 6px; }
+  /* Inputs that show focus via their wrapper's focus-within ring — suppress the inner outline box */
+  .no-focus-box:focus, .no-focus-box:focus-visible { outline: none !important; outline-offset: 0 !important; box-shadow: none !important; }
+  /* Marquee for ticker */
+  @keyframes ticker { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+  .ticker-track { animation: ticker 60s linear infinite; }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#f2f3fc">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#f2f3fc" />
+    <!-- Sidebar -->
+    <rect x="40" y="40" width="180" height="720" rx="16" fill="#ecedf6" />
+    <rect x="68" y="74" width="48" height="48" rx="10" fill="#00205B" />
+    <text x="92" y="106" text-anchor="middle" fill="#ffffff" font-family="Lexend, sans-serif" font-weight="700" font-size="22">D</text>
+    <!-- Nav items -->
+    <rect x="60" y="170" width="140" height="44" rx="10" fill="#E5F2FF" />
+    <circle cx="84" cy="192" r="9" fill="#0077ED" />
+    <rect x="100" y="186" width="80" height="12" rx="4" fill="#0077ED" opacity="0.7" />
+    <rect x="60" y="226" width="140" height="44" rx="10" fill="transparent" />
+    <circle cx="84" cy="248" r="9" fill="#727784" opacity="0.4" />
+    <rect x="100" y="242" width="64" height="12" rx="4" fill="#727784" opacity="0.4" />
+    <rect x="60" y="282" width="140" height="44" rx="10" fill="transparent" />
+    <circle cx="84" cy="304" r="9" fill="#727784" opacity="0.4" />
+    <rect x="100" y="298" width="72" height="12" rx="4" fill="#727784" opacity="0.4" />
+    <rect x="60" y="338" width="140" height="44" rx="10" fill="transparent" />
+    <circle cx="84" cy="360" r="9" fill="#727784" opacity="0.4" />
+    <rect x="100" y="354" width="88" height="12" rx="4" fill="#727784" opacity="0.4" />
+    <!-- CTA -->
+    <rect x="60" y="690" width="140" height="44" rx="10" fill="#0077ED" />
+    <text x="130" y="718" text-anchor="middle" fill="#ffffff" font-family="Lexend, sans-serif" font-weight="700" font-size="14">+ Lead Mới</text>
+    <!-- Topbar -->
+    <rect x="240" y="40" width="920" height="64" rx="16" fill="#ffffff" />
+    <rect x="272" y="62" width="280" height="20" rx="10" fill="#f2f3fc" />
+    <circle cx="1050" cy="72" r="14" fill="#f2f3fc" />
+    <circle cx="1090" cy="72" r="14" fill="#f2f3fc" />
+    <circle cx="1130" cy="72" r="14" fill="#0077ED" />
+    <!-- Hero card -->
+    <rect x="240" y="124" width="920" height="180" rx="20" fill="#00205B" />
+    <text x="272" y="172" fill="#ffffff" font-family="Lexend, sans-serif" font-weight="700" font-size="22">DSB · Dynamic Service Blueprint</text>
+    <text x="272" y="200" fill="#ffffff" opacity="0.7" font-family="Inter, sans-serif" font-size="13">iLead · dWork · dLink · dAccount — 4 La Bàn cho Financial Advisor</text>
+    <rect x="272" y="232" width="140" height="40" rx="10" fill="#0077ED" />
+    <text x="342" y="258" text-anchor="middle" fill="#ffffff" font-family="Lexend, sans-serif" font-weight="600" font-size="13">Mở dashboard</text>
+    <circle cx="1080" cy="200" r="60" fill="#0077ED" opacity="0.5" />
+    <circle cx="1120" cy="170" r="36" fill="#00C97D" opacity="0.4" />
+    <!-- Stat tiles row -->
+    <rect x="240" y="324" width="220" height="120" rx="16" fill="#ffffff" />
+    <rect x="272" y="350" width="40" height="40" rx="10" fill="#E5F2FF" />
+    <rect x="272" y="402" width="100" height="14" rx="4" fill="#727784" opacity="0.4" />
+    <rect x="272" y="422" width="140" height="22" rx="6" fill="#00205B" />
+    <rect x="473" y="324" width="220" height="120" rx="16" fill="#ffffff" />
+    <rect x="505" y="350" width="40" height="40" rx="10" fill="#E5F2FF" />
+    <rect x="505" y="402" width="100" height="14" rx="4" fill="#727784" opacity="0.4" />
+    <rect x="505" y="422" width="120" height="22" rx="6" fill="#00C97D" />
+    <rect x="706" y="324" width="220" height="120" rx="16" fill="#ffffff" />
+    <rect x="738" y="350" width="40" height="40" rx="10" fill="#FFE3CC" />
+    <rect x="738" y="402" width="100" height="14" rx="4" fill="#727784" opacity="0.4" />
+    <rect x="738" y="422" width="100" height="22" rx="6" fill="#FF8C33" />
+    <rect x="939" y="324" width="220" height="120" rx="16" fill="#ffffff" />
+    <rect x="971" y="350" width="40" height="40" rx="10" fill="#EDD8EE" />
+    <rect x="971" y="402" width="100" height="14" rx="4" fill="#727784" opacity="0.4" />
+    <rect x="971" y="422" width="130" height="22" rx="6" fill="#8B2E8F" />
+    <!-- Lower content -->
+    <rect x="240" y="464" width="600" height="296" rx="16" fill="#ffffff" />
+    <rect x="272" y="492" width="160" height="18" rx="6" fill="#00205B" />
+    <rect x="272" y="520" width="240" height="12" rx="4" fill="#727784" opacity="0.4" />
+    <!-- bars -->
+    <rect x="272" y="580" width="44" height="140" rx="6" fill="#CCE5FF" />
+    <rect x="332" y="610" width="44" height="110" rx="6" fill="#CCE5FF" />
+    <rect x="392" y="560" width="44" height="160" rx="6" fill="#CCE5FF" />
+    <rect x="452" y="540" width="44" height="180" rx="6" fill="#0077ED" />
+    <rect x="512" y="600" width="44" height="120" rx="6" fill="#CCE5FF" />
+    <rect x="572" y="570" width="44" height="150" rx="6" fill="#CCE5FF" />
+    <rect x="632" y="590" width="44" height="130" rx="6" fill="#CCE5FF" />
+    <rect x="692" y="610" width="44" height="110" rx="6" fill="#CCE5FF" />
+    <rect x="752" y="540" width="44" height="180" rx="6" fill="#CCE5FF" />
+    <!-- Right card with donut -->
+    <rect x="853" y="464" width="307" height="296" rx="16" fill="#ffffff" />
+    <circle cx="1006" cy="610" r="74" fill="none" stroke="#eef2ff" stroke-width="22" />
+    <circle cx="1006" cy="610" r="74" fill="none" stroke="#0077ED" stroke-width="22" stroke-dasharray="160 305" transform="rotate(-90 1006 610)" />
+    <circle cx="1006" cy="610" r="74" fill="none" stroke="#00C97D" stroke-width="22" stroke-dasharray="100 305" stroke-dashoffset="-160" transform="rotate(-90 1006 610)" />
+    <circle cx="1006" cy="610" r="74" fill="none" stroke="#FFB020" stroke-width="22" stroke-dasharray="50 305" stroke-dashoffset="-260" transform="rotate(-90 1006 610)" />
+    <text x="885" y="500" fill="#00205B" font-family="Lexend, sans-serif" font-weight="600" font-size="15">Allocation</text>
+  </svg>
+</template>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="src/data.js"></script>
+<script type="text/babel" src="src/ui.jsx"></script>
+<script type="text/babel" src="src/shell.jsx"></script>
+<script type="text/babel" src="src/dwork.jsx"></script>
+<script type="text/babel" src="src/dashboard-welcome.jsx"></script>
+<script type="text/babel" src="src/dwork-client.jsx"></script>
+<script type="text/babel" src="src/client-profile.jsx"></script>
+<script type="text/babel" src="src/cp-dgo.jsx"></script>
+<script type="text/babel" src="src/cp-hscn.jsx"></script>
+<script type="text/babel" src="src/cp-daccount.jsx"></script>
+<script type="text/babel" src="src/cp-dinvest.jsx"></script>
+<script type="text/babel" src="src/cp-dlink.jsx"></script>
+<script type="text/babel" src="src/cp-compass.jsx"></script>
+<script type="text/babel" src="src/dwork-filter.jsx"></script>
+<script type="text/babel" src="src/dwork-client-list.jsx"></script>
+<script type="text/babel" src="src/dwork-omni.jsx"></script>
+<script type="text/babel" src="src/dwork-other.jsx"></script>
+<script type="text/babel" src="src/ilead.jsx"></script>
+<script type="text/babel" src="src/dlink.jsx"></script>
+<script type="text/babel" src="src/daccount.jsx"></script>
+<script type="text/babel" src="src/app.jsx"></script>
+</body>
+</html>

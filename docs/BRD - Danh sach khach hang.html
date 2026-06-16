@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BRD · Danh sách khách hàng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #191c22;
+    --ink-soft: #424753;
+    --ink-faint: #6b7180;
+    --line: #d8dbe6;
+    --line-soft: #e9ebf3;
+    --paper: #ffffff;
+    --wash: #f5f7fb;
+    --navy: #00205B;
+    --blue: #0077ED;
+    --blue-50: #E5F2FF;
+    --blue-100: #CCE5FF;
+    --green: #00936b;
+    --amber: #9a6a00;
+    --red: #c0392b;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--wash);
+    color: var(--ink);
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .page {
+    max-width: 880px;
+    margin: 32px auto;
+    background: var(--paper);
+    padding: 72px 80px 88px;
+    box-shadow: 0 1px 3px rgba(0,32,91,.06), 0 18px 50px -24px rgba(0,32,91,.22);
+    border-radius: 4px;
+  }
+
+  /* ---------- Cover / masthead ---------- */
+  .masthead { border-bottom: 3px solid var(--navy); padding-bottom: 26px; margin-bottom: 38px; }
+  .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 30px; }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand-mark {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--blue), var(--navy));
+    color: #fff; font-family: "Lexend", sans-serif; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; font-size: 15px; letter-spacing: -.02em;
+  }
+  .brand-name { font-family: "Lexend", sans-serif; font-weight: 700; font-size: 15px; color: var(--navy); letter-spacing: -.01em; }
+  .brand-sub { font-size: 11.5px; color: var(--ink-faint); margin-top: 1px; }
+  .doc-tag {
+    font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--blue);
+    background: var(--blue-50); border: 1px solid var(--blue-100);
+    padding: 5px 11px; border-radius: 999px; letter-spacing: .02em;
+  }
+  .eyebrow { font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; }
+  h1.title { font-family: "Lexend", sans-serif; font-weight: 700; font-size: 38px; line-height: 1.1; letter-spacing: -.022em; color: var(--navy); margin: 0 0 12px; }
+  .lede { font-size: 16.5px; line-height: 1.6; color: var(--ink-soft); max-width: 60ch; margin: 0; }
+
+  /* ---------- Meta table ---------- */
+  .meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); border-radius: 10px; overflow: hidden; margin: 34px 0 8px; }
+  .meta div { background: var(--paper); padding: 13px 16px; }
+  .meta dt { font-size: 10.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-faint); font-weight: 600; margin-bottom: 3px; }
+  .meta dd { margin: 0; font-size: 13.5px; font-weight: 600; color: var(--ink); }
+  .meta dd.mono { font-family: var(--mono); font-weight: 500; }
+
+  /* ---------- Sections ---------- */
+  section { margin-top: 46px; }
+  h2 {
+    font-family: "Lexend", sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -.015em; color: var(--navy);
+    margin: 0 0 4px; padding-top: 6px;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  h2 .num { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--blue); flex: none; width: 30px; }
+  h2 + .sub-lede { color: var(--ink-soft); margin: 0 0 20px 42px; font-size: 14.5px; }
+  h3 { font-family: "Lexend", sans-serif; font-weight: 600; font-size: 16px; color: var(--ink); margin: 28px 0 10px; letter-spacing: -.01em; }
+  h3 .h3-id { font-family: var(--mono); font-size: 12.5px; font-weight: 600; color: var(--blue); margin-right: 8px; }
+  p { margin: 0 0 14px; }
+  .section-body { margin-left: 42px; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 7px; }
+  li::marker { color: var(--blue); }
+  strong { font-weight: 600; color: var(--ink); }
+  code { font-family: var(--mono); font-size: 12.5px; background: var(--wash); border: 1px solid var(--line-soft); padding: 1px 6px; border-radius: 5px; color: var(--navy); }
+
+  /* ---------- Tables ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 18px; font-size: 13.5px; }
+  thead th { background: var(--navy); color: #fff; text-align: left; font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .045em; padding: 9px 12px; }
+  thead th:first-child { border-top-left-radius: 7px; }
+  thead th:last-child { border-top-right-radius: 7px; }
+  tbody td { padding: 10px 12px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  tbody tr:nth-child(even) td { background: var(--wash); }
+  tbody tr:last-child td { border-bottom: 1px solid var(--line); }
+  td .id { font-family: var(--mono); font-weight: 600; color: var(--blue); font-size: 12.5px; white-space: nowrap; }
+  .col-id { width: 64px; }
+  .col-pri { width: 72px; }
+  td.mono { font-family: var(--mono); font-size: 12.5px; }
+
+  /* ---------- Pills ---------- */
+  .pri { font-family: var(--mono); font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; letter-spacing: .04em; white-space: nowrap; display: inline-block; }
+  .pri.must { background: #fdecea; color: var(--red); }
+  .pri.should { background: #fff4e0; color: var(--amber); }
+  .pri.could { background: var(--blue-50); color: var(--blue); }
+
+  /* ---------- Callouts ---------- */
+  .callout { border-left: 3px solid var(--blue); background: var(--blue-50); border-radius: 0 9px 9px 0; padding: 14px 18px; margin: 18px 0; font-size: 14px; color: var(--ink-soft); }
+  .callout strong { color: var(--navy); }
+  .callout.warn { border-color: var(--amber); background: #fff8ec; }
+  .callout.warn strong { color: var(--amber); }
+
+  /* ---------- Goal cards ---------- */
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 4px 0 8px; }
+  .card { border: 1px solid var(--line-soft); border-radius: 11px; padding: 16px 18px; }
+  .card .kpi { font-family: "Lexend", sans-serif; font-weight: 700; font-size: 26px; color: var(--blue); letter-spacing: -.02em; line-height: 1; margin-bottom: 7px; }
+  .card .kpi-label { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 3px; }
+  .card .kpi-note { font-size: 12.5px; color: var(--ink-faint); line-height: 1.5; }
+
+  .toc { background: var(--wash); border: 1px solid var(--line-soft); border-radius: 12px; padding: 22px 26px; margin: 36px 0 0; }
+  .toc-title { font-family: "Lexend", sans-serif; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-faint); margin-bottom: 12px; }
+  .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 40px; }
+  .toc li { margin-bottom: 9px; font-size: 14px; break-inside: avoid; }
+  .toc a { color: var(--ink); text-decoration: none; display: flex; gap: 11px; }
+  .toc a:hover { color: var(--blue); }
+  .toc .tnum { font-family: var(--mono); color: var(--blue); font-weight: 600; font-size: 12.5px; flex: none; width: 22px; }
+
+  .divider { height: 1px; background: var(--line-soft); border: 0; margin: 44px 0 0; }
+  .footer-note { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line-soft); font-size: 12px; color: var(--ink-faint); display: flex; justify-content: space-between; gap: 20px; }
+
+  @media print {
+    body { background: #fff; font-size: 11.5pt; }
+    .page { box-shadow: none; margin: 0; max-width: none; padding: 0 14mm; border-radius: 0; }
+    section { break-inside: auto; }
+    h2, h3 { break-after: avoid; }
+    table, .cards, .callout, .meta { break-inside: avoid; }
+    thead th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tbody tr:nth-child(even) td, .pri, .card .kpi, .callout, .doc-tag, .brand-mark { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a { color: inherit; text-decoration: none; }
+  }
+  @media (max-width: 720px) {
+    .page { padding: 40px 22px 56px; margin: 0; }
+    .meta { grid-template-columns: 1fr 1fr; }
+    .cards { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    h1.title { font-size: 30px; }
+    .section-body { margin-left: 0; }
+    h2 + .sub-lede { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<article class="page">
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="brand-row">
+      <div class="brand">
+        <div class="brand-mark">DSB</div>
+        <div>
+          <div class="brand-name">Dynamic Service Blueprint</div>
+          <div class="brand-sub">dWork · Client Zone</div>
+        </div>
+      </div>
+      <span class="doc-tag">BRD-DSB-CLM-001</span>
+    </div>
+    <div class="eyebrow">Business Requirements Document</div>
+    <h1 class="title">Màn hình Danh sách khách hàng</h1>
+    <p class="lede">Tài liệu mô tả yêu cầu nghiệp vụ cho <strong>vùng làm việc</strong> của màn hình danh sách khách hàng — nơi chuyên viên tư vấn tra cứu, lọc, theo dõi và truy cập hồ sơ khách hàng đang quản lý. <em>Không bao gồm app header, tiêu đề trang và navigation bar (thuộc layout chung của dWork).</em></p>
+
+    <dl class="meta">
+      <div><dt>Sản phẩm</dt><dd>DSB · dWork</dd></div>
+      <div><dt>Module</dt><dd>Client Zone</dd></div>
+      <div><dt>Phiên bản</dt><dd class="mono">v1.0</dd></div>
+      <div><dt>Trạng thái</dt><dd>Draft for review</dd></div>
+      <div><dt>Người soạn</dt><dd>Product / BA</dd></div>
+      <div><dt>Chủ sở hữu</dt><dd>Product Owner</dd></div>
+      <div><dt>Ngày cập nhật</dt><dd class="mono">12/06/2026</dd></div>
+      <div><dt>Đối tượng đọc</dt><dd>BA · Dev · QA · PO</dd></div>
+    </dl>
+
+    <nav class="toc">
+      <div class="toc-title">Mục lục</div>
+      <ol>
+        <li><a href="#s1"><span class="tnum">1</span> Bối cảnh &amp; Mục tiêu</a></li>
+        <li><a href="#s2"><span class="tnum">2</span> Phạm vi</a></li>
+        <li><a href="#s3"><span class="tnum">3</span> Đối tượng sử dụng</a></li>
+        <li><a href="#s4"><span class="tnum">4</span> User Stories</a></li>
+        <li><a href="#s5"><span class="tnum">5</span> Yêu cầu chức năng</a></li>
+        <li><a href="#s6"><span class="tnum">6</span> Cấu trúc dữ liệu hiển thị</a></li>
+        <li><a href="#s7"><span class="tnum">7</span> Quy tắc nghiệp vụ</a></li>
+        <li><a href="#s8"><span class="tnum">8</span> Yêu cầu phi chức năng</a></li>
+        <li><a href="#s9"><span class="tnum">9</span> Giả định, phụ thuộc &amp; câu hỏi mở</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <!-- ============ 1. CONTEXT & GOALS ============ -->
+  <section id="s1">
+    <h2><span class="num">1</span> Bối cảnh &amp; Mục tiêu</h2>
+    <p class="sub-lede">Vì sao cần màn hình này và đo lường thành công ra sao.</p>
+    <div class="section-body">
+      <h3>1.1 Bối cảnh</h3>
+      <p>Chuyên viên tư vấn (CVTV / RM) quản lý đồng thời hàng chục đến hàng trăm khách hàng với mức độ ưu tiên, nhịp chăm sóc và tình trạng hồ sơ khác nhau. Hiện việc xác định "hôm nay cần làm việc với ai" còn rời rạc, phải tra cứu thủ công qua nhiều nguồn. Màn hình <strong>Danh sách khách hàng</strong> là cửa ngõ của Client Zone: tập trung toàn bộ khách hàng đang quản lý vào một bảng duy nhất, cho phép tra cứu nhanh theo định danh, lọc theo tiêu chí nghiệp vụ và mở hồ sơ chi tiết chỉ trong một thao tác.</p>
+
+      <h3>1.2 Mục tiêu nghiệp vụ</h3>
+      <ul>
+        <li><strong>Rút ngắn thời gian tìm khách hàng</strong> — từ tra cứu thủ công xuống còn vài giây qua tìm kiếm định danh và lọc nhanh.</li>
+        <li><strong>Ưu tiên đúng việc</strong> — giúp CVTV nhận diện ngay khách cần chăm sóc (cảnh báo, lâu chưa tương tác, hồ sơ chưa đủ).</li>
+        <li><strong>Nâng chất lượng dữ liệu</strong> — hiển thị độ hoàn thiện hồ sơ để thúc đẩy bổ sung dữ liệu còn thiếu.</li>
+        <li><strong>Một nguồn sự thật</strong> — thống nhất số liệu tài sản, hiệu quả và lịch sử tương tác theo hai ngữ cảnh thời gian (T-1 chốt ngày và T0 thời gian thực).</li>
+      </ul>
+
+      <h3>1.3 Chỉ số thành công</h3>
+      <div class="cards">
+        <div class="card">
+          <div class="kpi">&lt; 5s</div>
+          <div class="kpi-label">Thời gian tìm 1 khách hàng</div>
+          <div class="kpi-note">Từ lúc mở màn đến khi mở đúng hồ sơ.</div>
+        </div>
+        <div class="card">
+          <div class="kpi">+15%</div>
+          <div class="kpi-label">Độ hoàn thiện hồ sơ TB</div>
+          <div class="kpi-note">Sau khi đưa cột completeness vào danh sách.</div>
+        </div>
+        <div class="card">
+          <div class="kpi">&minus;30%</div>
+          <div class="kpi-label">Khách "lâu chưa chăm sóc"</div>
+          <div class="kpi-note">Khách &gt; 30 ngày không tương tác.</div>
+        </div>
+        <div class="card">
+          <div class="kpi">≥ 60%</div>
+          <div class="kpi-label">CVTV dùng bộ lọc lưu sẵn</div>
+          <div class="kpi-note">Tỷ lệ phiên dùng cấu hình đã lưu.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. SCOPE ============ -->
+  <section id="s2">
+    <h2><span class="num">2</span> Phạm vi</h2>
+    <p class="sub-lede">Ranh giới rõ ràng giữa những gì màn hình này làm và không làm.</p>
+    <div class="section-body">
+      <h3>2.1 Trong phạm vi</h3>
+      <ul>
+        <li>Bảng danh sách khách hàng <strong>đang được phân công</strong> cho CVTV đăng nhập.</li>
+        <li>Chuyển ngữ cảnh thời gian <strong>T-1 (chốt ngày)</strong> và <strong>T0 (thời gian thực)</strong>.</li>
+        <li>Tra cứu nhanh theo định danh (tên, CustomerID, số lưu ký, STK, SĐT, email, CCCD, khoảng ngày mở TK).</li>
+        <li>Bộ lọc theo điều kiện: lọc nhanh (preset), bộ lọc theo trường, bộ lọc nâng cao đa điều kiện (VÀ / HOẶC).</li>
+        <li>Lưu, áp dụng, đổi tên, xoá cấu hình tìm kiếm &amp; lọc.</li>
+        <li>Sắp xếp theo cột số, hiển thị bộ lọc đang dùng, đếm kết quả, xuất danh sách.</li>
+        <li>Mở hồ sơ chi tiết khách hàng từ một dòng.</li>
+      </ul>
+
+      <h3>2.2 Ngoài phạm vi</h3>
+      <ul>
+        <li><strong>Global chrome:</strong> thanh app header trên cùng (ô tìm kiếm toàn cục, thông báo, tài khoản), <strong>tiêu đề trang</strong> “Danh sách khách hàng” và <strong>thanh navigation</strong> (sidebar / zone tabs) — thuộc layout chung của dWork, không mô tả trong BRD này.</li>
+        <li>Màn hình <strong>hồ sơ chi tiết</strong> khách hàng (mô tả trong BRD riêng của Client Profile).</li>
+        <li>Phân công / chuyển giao khách hàng giữa các CVTV.</li>
+        <li>Tạo mới khách hàng &amp; quy trình onboarding / eKYC.</li>
+        <li>Cấu hình thuật toán cảnh báo NAC và mô hình tính độ hoàn thiện hồ sơ (chỉ tiêu thụ kết quả).</li>
+        <li>Chiến dịch outreach hàng loạt (thuộc module Omni).</li>
+      </ul>
+      <div class="callout">
+        <strong>Khu vực được đặc tả:</strong> BRD này chỉ mô tả <strong>vùng làm việc của danh sách</strong> — từ hàng tra cứu / bộ lọc trở xuống (công tắc T-1/T0, tra cứu nhanh, lọc nhanh, lọc nâng cao, bộ lọc đang dùng, bảng kết quả và các hành động). Header, title và navigation bar nằm ngoài phạm vi.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. USERS ============ -->
+  <section id="s3">
+    <h2><span class="num">3</span> Đối tượng sử dụng</h2>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr><th style="width:180px">Vai trò</th><th>Nhu cầu chính</th><th style="width:150px">Tần suất</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Chuyên viên tư vấn (RM)</strong></td><td>Tìm khách, xác định ưu tiên trong ngày, mở hồ sơ làm việc.</td><td>Hằng ngày · cao</td></tr>
+          <tr><td><strong>Trưởng nhóm tư vấn</strong></td><td>Theo dõi sức khoẻ danh mục khách của nhóm, chất lượng hồ sơ.</td><td>Hằng ngày</td></tr>
+          <tr><td><strong>Chuyên viên hỗ trợ (CA)</strong></td><td>Tra cứu nhanh theo định danh để xử lý yêu cầu khách.</td><td>Theo nhu cầu</td></tr>
+          <tr><td><strong>Compliance</strong></td><td>Rà soát khách có cảnh báo, hồ sơ thiếu dữ liệu định danh.</td><td>Định kỳ</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 4. USER STORIES ============ -->
+  <section id="s4">
+    <h2><span class="num">4</span> User Stories</h2>
+    <p class="sub-lede">Nhu cầu người dùng dưới dạng câu chuyện, làm gốc cho yêu cầu chức năng.</p>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr><th class="col-id">Mã</th><th>Là một CVTV, tôi muốn…</th><th style="width:150px">Để…</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="id">US-01</span></td><td>tra cứu khách hàng bằng tên, mã KH, số tài khoản hoặc CCCD</td><td>tìm đúng người trong vài giây.</td></tr>
+          <tr><td><span class="id">US-02</span></td><td>lọc nhanh ra nhóm khách VIP, có cảnh báo, hồ sơ chưa đủ hoặc lâu chưa chăm sóc</td><td>biết hôm nay cần ưu tiên ai.</td></tr>
+          <tr><td><span class="id">US-03</span></td><td>kết hợp nhiều điều kiện lọc theo VÀ / HOẶC</td><td>khoanh vùng chính xác phân khúc khách hàng.</td></tr>
+          <tr><td><span class="id">US-04</span></td><td>lưu lại bộ lọc hay dùng và mở lại nhanh</td><td>không phải dựng lại điều kiện mỗi ngày.</td></tr>
+          <tr><td><span class="id">US-05</span></td><td>chuyển giữa số liệu chốt ngày (T-1) và thời gian thực (T0)</td><td>xem đúng bối cảnh khi tư vấn.</td></tr>
+          <tr><td><span class="id">US-06</span></td><td>thấy ngay độ hoàn thiện hồ sơ của từng khách</td><td>chủ động bổ sung dữ liệu còn thiếu.</td></tr>
+          <tr><td><span class="id">US-07</span></td><td>sắp xếp theo tài sản, hiệu quả hoặc thời gian tương tác cuối</td><td>nhìn ra điểm bất thường nhanh.</td></tr>
+          <tr><td><span class="id">US-08</span></td><td>mở hồ sơ chi tiết chỉ bằng một cú nhấp</td><td>bắt đầu làm việc ngay với khách.</td></tr>
+          <tr><td><span class="id">US-09</span></td><td>xuất danh sách đã lọc ra file</td><td>báo cáo và chia sẻ ngoài hệ thống.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 5. FUNCTIONAL REQUIREMENTS ============ -->
+  <section id="s5">
+    <h2><span class="num">5</span> Yêu cầu chức năng</h2>
+    <p class="sub-lede">Mô tả chi tiết hành vi của từng khối chức năng trên màn hình.</p>
+    <div class="section-body">
+
+      <h3><span class="h3-id">5.1</span> Ngữ cảnh thời gian — T-1 / T0</h3>
+      <table>
+        <thead><tr><th class="col-id">Mã</th><th>Yêu cầu</th><th class="col-pri">Ưu tiên</th></tr></thead>
+        <tbody>
+          <tr><td><span class="id">FR-1.1</span></td><td>Cung cấp công tắc chuyển hai chế độ: <strong>T-1</strong> (số liệu chốt ngày) và <strong>T0</strong> (thời gian thực). Mặc định mở ở T-1.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-1.2</span></td><td>Ở chế độ T0, hiển thị đồng hồ thời gian thực và chỉ báo "đang live"; cập nhật tài sản &amp; P&amp;L tạm tính theo biến động trong ngày.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-1.3</span></td><td>Tiêu đề cột tài sản &amp; hiệu quả đổi nhãn theo ngữ cảnh: T-1 hiển thị <em>"Giá trị tài sản / Hiệu quả YTD"</em>; T0 hiển thị <em>"Tài sản (tạm tính) / P&amp;L trong ngày"</em>.</td><td><span class="pri must">Must</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="h3-id">5.2</span> Tra cứu nhanh (định danh)</h3>
+      <table>
+        <thead><tr><th class="col-id">Mã</th><th>Yêu cầu</th><th class="col-pri">Ưu tiên</th></tr></thead>
+        <tbody>
+          <tr><td><span class="id">FR-2.1</span></td><td>Hiển thị một hàng tra cứu gọn với các trường dùng nhiều nhất luôn sẵn (Tên, CustomerID, SĐT, CCCD) cùng nút <strong>Tìm kiếm</strong>.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-2.2</span></td><td>Nút mở rộng (▾) bung popover chứa <strong>đầy đủ tiêu chí</strong>: Tên, CustomerID, Số lưu ký, STK giao dịch, SĐT, Email, CCCD/CMND và khoảng <strong>ngày mở tài khoản</strong> (từ–đến).</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-2.3</span></td><td>Tìm kiếm khớp một phần (contains), không phân biệt hoa thường; nhiều tiêu chí kết hợp theo VÀ.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-2.4</span></td><td>Phím tắt <code>/</code> đưa con trỏ vào ô tìm kiếm; phím <code>Enter</code> thực thi tìm.</td><td><span class="pri could">Could</span></td></tr>
+          <tr><td><span class="id">FR-2.5</span></td><td>Khi có tiêu chí đang nhập ngầm trong popover, nút mở rộng hiển thị huy hiệu đếm số tiêu chí; nút <strong>Xoá</strong> reset toàn bộ tra cứu.</td><td><span class="pri should">Should</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="h3-id">5.3</span> Lọc nhanh (preset)</h3>
+      <table>
+        <thead><tr><th class="col-id">Mã</th><th>Yêu cầu</th><th class="col-pri">Ưu tiên</th></tr></thead>
+        <tbody>
+          <tr><td><span class="id">FR-3.1</span></td><td>Cung cấp bộ lọc nhanh một chạm, chọn nhiều: Khách VIP, Cảnh báo đỏ, Cần theo dõi, Hồ sơ chưa đủ, Lâu chưa chăm sóc, Nhiều tiền mặt, P&amp;L âm, Nhịp hằng ngày, Khách hàng mới.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-3.2</span></td><td>Các preset đang bật hiển thị thành chip có thể gỡ trên hàng "Bộ lọc đang dùng"; nhiều preset kết hợp theo VÀ.</td><td><span class="pri should">Should</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="h3-id">5.4</span> Bộ lọc nâng cao (đa điều kiện)</h3>
+      <table>
+        <thead><tr><th class="col-id">Mã</th><th>Yêu cầu</th><th class="col-pri">Ưu tiên</th></tr></thead>
+        <tbody>
+          <tr><td><span class="id">FR-4.1</span></td><td>Mở trình dựng điều kiện cho phép thêm nhiều điều kiện, mỗi điều kiện gồm <strong>Chỉ số → Điều kiện → Giá trị</strong>.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-4.2</span></td><td>Chỉ số được nhóm theo danh mục có ô tìm: <em>Hồ sơ cá nhân</em> (ngày sinh, giới tính, thành phố, quận/huyện, độ hoàn thiện hồ sơ), <em>Tài chính</em> (giá trị tài sản, tỷ lệ tiền mặt, hiệu quả YTD), <em>Hành trình &amp; Chăm sóc</em> (ngày mở TK, phân khúc, giai đoạn hành trình, cảnh báo NAC, nhịp chăm sóc, số ngày chưa tương tác).</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-4.3</span></td><td>Toán tử thay đổi theo kiểu trường — Số: <code>&gt; &lt; ≥ ≤ =</code> &amp; trong khoảng; Ngày: trong khoảng / trước / sau / đúng ngày; Danh mục: là / không phải; Văn bản: chứa / chính xác.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-4.4</span></td><td>Các điều kiện nối nhau bằng connector <strong>VÀ / HOẶC</strong> chuyển đổi được; đánh giá theo nhóm "OR của các nhóm AND".</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-4.5</span></td><td>Mỗi điều kiện có thể nhân đôi hoặc xoá; có thể thêm/sửa điều kiện trực tiếp từ popover hoặc trong modal nâng cao.</td><td><span class="pri should">Should</span></td></tr>
+          <tr><td><span class="id">FR-4.6</span></td><td>Các điều kiện đã áp dụng hiển thị thành chip (kèm nhãn VÀ/HOẶC) trên hàng "Bộ lọc đang dùng"; bấm chip để sửa, bấm ✕ để gỡ.</td><td><span class="pri must">Must</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="h3-id">5.5</span> Lưu &amp; quản lý cấu hình</h3>
+      <table>
+        <thead><tr><th class="col-id">Mã</th><th>Yêu cầu</th><th class="col-pri">Ưu tiên</th></tr></thead>
+        <tbody>
+          <tr><td><span class="id">FR-5.1</span></td><td>"Lưu cài đặt bộ lọc" cho phép đặt tên và lưu snapshot toàn bộ tiêu chí (tìm kiếm + lọc nhanh + lọc nâng cao). Chỉ bật khi có ít nhất một tiêu chí.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-5.2</span></td><td>"Cấu hình đã lưu" liệt kê các cấu hình kèm tóm tắt điều kiện; áp dụng, đổi tên hoặc xoá từng cấu hình.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-5.3</span></td><td>Áp dụng một cấu hình sẽ khôi phục đúng trạng thái tìm kiếm &amp; lọc đã lưu; mọi thay đổi tiêu chí thủ công sau đó sẽ bỏ trạng thái "đang dùng cấu hình".</td><td><span class="pri should">Should</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="h3-id">5.6</span> Bảng kết quả, sắp xếp &amp; hành động</h3>
+      <table>
+        <thead><tr><th class="col-id">Mã</th><th>Yêu cầu</th><th class="col-pri">Ưu tiên</th></tr></thead>
+        <tbody>
+          <tr><td><span class="id">FR-6.1</span></td><td>Hiển thị bảng với cột <strong>Khách hàng cố định bên trái</strong> khi cuộn ngang; các cột còn lại cuộn được.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-6.2</span></td><td>Cho phép sắp xếp tăng/giảm theo các cột số: Giá trị tài sản, P&amp;L, Tiền mặt, Số ngày tương tác cuối; có nút "Bỏ sắp xếp".</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-6.3</span></td><td>Thanh thông tin kết quả: <em>"X / Y khách hàng"</em>, số điều kiện lọc đang áp dụng, trạng thái sắp xếp.</td><td><span class="pri should">Should</span></td></tr>
+          <tr><td><span class="id">FR-6.4</span></td><td>Hàng "Bộ lọc đang dùng" gom mọi chip tiêu chí; nút <strong>Đặt lại</strong> xoá toàn bộ tiêu chí một lần.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-6.5</span></td><td>Nhấp vào một dòng (vùng tên khách) mở <strong>hồ sơ chi tiết</strong> của khách hàng đó.</td><td><span class="pri must">Must</span></td></tr>
+          <tr><td><span class="id">FR-6.6</span></td><td><strong>Xuất danh sách</strong> kết quả hiện tại (theo bộ lọc đang áp dụng) ra file.</td><td><span class="pri should">Should</span></td></tr>
+          <tr><td><span class="id">FR-6.7</span></td><td>Khi không có kết quả, hiển thị trạng thái rỗng kèm gợi ý nới điều kiện.</td><td><span class="pri must">Must</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 6. DATA / COLUMNS ============ -->
+  <section id="s6">
+    <h2><span class="num">6</span> Cấu trúc dữ liệu hiển thị</h2>
+    <p class="sub-lede">Các cột của bảng và ý nghĩa nghiệp vụ. Giá trị thay đổi theo ngữ cảnh T-1 / T0.</p>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr><th style="width:180px">Cột</th><th>Mô tả</th><th style="width:118px">Kiểu</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Khách hàng</strong></td><td>Tên khách hàng (cột cố định). Là điểm mở hồ sơ chi tiết.</td><td class="mono">text</td></tr>
+          <tr><td><strong>Độ hoàn thiện hồ sơ</strong></td><td>Tỷ lệ % dữ liệu đã thu thập, kèm thanh tiến độ; phối màu theo ngưỡng (≥80% xanh, 60–79% vàng, &lt;60% đỏ); đạt 100% có dấu xác thực.</td><td class="mono">% (0–100)</td></tr>
+          <tr><td><strong>Giá trị tài sản</strong> / Tài sản (tạm tính)</td><td>Tổng tài sản (triệu đồng). T0 hiển thị giá trị tạm tính kèm mức tăng/giảm so với chốt ngày.</td><td class="mono">number · tr</td></tr>
+          <tr><td><strong>Hiệu quả YTD</strong> / P&amp;L trong ngày</td><td>Hiệu quả danh mục theo %; T-1 kèm so sánh với benchmark (pp), T0 là P&amp;L phát sinh trong ngày.</td><td class="mono">% (±)</td></tr>
+          <tr><td><strong>Tiền mặt · Sức mua</strong></td><td>Tỷ lệ tiền mặt trên danh mục, kèm thanh trực quan; làm nổi khi &gt; 40% (sức mua cao).</td><td class="mono">% (0–100)</td></tr>
+          <tr><td><strong>Tương tác cuối</strong></td><td>Số ngày kể từ lần tương tác gần nhất (Hôm nay / Hôm qua / N ngày trước); cảnh báo đỏ khi &gt; 30 ngày.</td><td class="mono">ngày</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Trường định danh phục vụ tra cứu (không hiển thị cột):</strong> CustomerID, Số lưu ký, STK giao dịch, SĐT, Email, CCCD/CMND, CIF, ngày mở tài khoản. Các trường này dùng cho tra cứu nhanh và bộ lọc, không nhất thiết hiển thị trên bảng.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. BUSINESS RULES ============ -->
+  <section id="s7">
+    <h2><span class="num">7</span> Quy tắc nghiệp vụ</h2>
+    <div class="section-body">
+      <table>
+        <thead><tr><th class="col-id">Mã</th><th>Quy tắc</th></tr></thead>
+        <tbody>
+          <tr><td><span class="id">BR-01</span></td><td>Danh sách chỉ chứa khách hàng được phân công cho CVTV đang đăng nhập.</td></tr>
+          <tr><td><span class="id">BR-02</span></td><td>Mặc định mở ở ngữ cảnh <strong>T-1</strong>; số liệu T0 mang tính tạm tính, không dùng làm số liệu chính thức.</td></tr>
+          <tr><td><span class="id">BR-03</span></td><td>Phân ngưỡng độ hoàn thiện hồ sơ: <strong>≥ 80%</strong> = đạt (xanh), <strong>60–79%</strong> = cảnh báo (vàng), <strong>&lt; 60%</strong> = thiếu (đỏ).</td></tr>
+          <tr><td><span class="id">BR-04</span></td><td>Khách được coi là "lâu chưa chăm sóc" khi <strong>số ngày tương tác cuối &gt; 30</strong>.</td></tr>
+          <tr><td><span class="id">BR-05</span></td><td>"Khách VIP" tương ứng phân khúc <strong>Private Wealth</strong>; "Nhiều tiền mặt" khi tỷ lệ tiền mặt <strong>&gt; 40%</strong>; "Khách hàng mới" khi giai đoạn hành trình ở <strong>Khởi đầu</strong>.</td></tr>
+          <tr><td><span class="id">BR-06</span></td><td>Nhiều tiêu chí tra cứu và lọc nhanh kết hợp theo <strong>VÀ</strong>. Bộ lọc nâng cao đánh giá theo <strong>"OR của các nhóm AND"</strong> dựa trên connector giữa các điều kiện.</td></tr>
+          <tr><td><span class="id">BR-07</span></td><td>Điều kiện chỉ được tính khi đã có giá trị hợp lệ; điều kiện chưa hoàn tất bị bỏ qua khi đánh giá.</td></tr>
+          <tr><td><span class="id">BR-08</span></td><td>Bất kỳ thay đổi tiêu chí thủ công nào cũng huỷ trạng thái "đang dùng cấu hình đã lưu".</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 8. NON-FUNCTIONAL ============ -->
+  <section id="s8">
+    <h2><span class="num">8</span> Yêu cầu phi chức năng</h2>
+    <div class="section-body">
+      <table>
+        <thead><tr><th style="width:150px">Nhóm</th><th>Yêu cầu</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Hiệu năng</strong></td><td>Lọc/tìm/sắp xếp phản hồi tức thì (&lt; 200ms) trên tập khách của một CVTV; bảng cuộn mượt với cột cố định.</td></tr>
+          <tr><td><strong>Khả dụng</strong></td><td>Toàn bộ thao tác chính đạt được không quá 2 cú nhấp; hỗ trợ phím tắt tìm kiếm.</td></tr>
+          <tr><td><strong>Đáp ứng (responsive)</strong></td><td>Bố cục giữ một hàng công cụ trên desktop; bảng cuộn ngang trên màn hẹp, cột Khách hàng luôn cố định.</td></tr>
+          <tr><td><strong>Bảo mật &amp; quyền</strong></td><td>Chỉ hiển thị khách hàng trong phạm vi phân quyền; thao tác xuất danh sách phải ghi log phục vụ kiểm toán.</td></tr>
+          <tr><td><strong>Ngôn ngữ</strong></td><td>Giao diện tiếng Việt; định dạng số &amp; ngày theo locale <code>vi-VN</code>.</td></tr>
+          <tr><td><strong>Lưu trạng thái</strong></td><td>Cấu hình đã lưu tồn tại theo người dùng giữa các phiên làm việc.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 9. ASSUMPTIONS ============ -->
+  <section id="s9">
+    <h2><span class="num">9</span> Giả định, phụ thuộc &amp; câu hỏi mở</h2>
+    <div class="section-body">
+      <h3>9.1 Giả định</h3>
+      <ul>
+        <li>Dữ liệu khách hàng, tài sản và lịch sử tương tác được cung cấp sẵn từ các hệ thống nguồn.</li>
+        <li>Điểm độ hoàn thiện hồ sơ và cảnh báo NAC được tính ở hệ thống khác, màn này chỉ tiêu thụ kết quả.</li>
+        <li>Mỗi khách hàng chỉ thuộc một danh mục quản lý của CVTV tại một thời điểm.</li>
+      </ul>
+      <h3>9.2 Phụ thuộc</h3>
+      <ul>
+        <li>API danh sách khách hàng theo CVTV, có hỗ trợ tham số ngữ cảnh T-1 / T0.</li>
+        <li>Dịch vụ tính giá tài sản &amp; P&amp;L thời gian thực cho chế độ T0.</li>
+        <li>Màn hồ sơ chi tiết khách hàng làm đích điều hướng (BR-mở hồ sơ).</li>
+        <li>Dịch vụ lưu cấu hình bộ lọc theo người dùng.</li>
+      </ul>
+      <div class="callout warn">
+        <strong>Câu hỏi mở:</strong>
+        <ul style="margin:8px 0 0">
+          <li>Định dạng &amp; phạm vi cột của file "Xuất danh sách" (CSV/Excel? bao gồm trường định danh?).</li>
+          <li>Cấu hình đã lưu có chia sẻ ở cấp nhóm/team không, hay chỉ cá nhân?</li>
+          <li>Giới hạn số lượng cấu hình lưu &amp; số điều kiện trong một bộ lọc?</li>
+          <li>Quy tắc làm tròn / tần suất cập nhật số liệu tạm tính ở chế độ T0?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">
+    <span>DSB · Dynamic Service Blueprint — BRD Danh sách khách hàng</span>
+    <span>BRD-DSB-CLM-001 · v1.0 · Draft · 12/06/2026</span>
+  </div>
+
+</article>
+</body>
+</html>
