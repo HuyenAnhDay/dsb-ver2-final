@@ -106,44 +106,10 @@ const COMING_SOON_META = {
 };
 
 function ComingSoonScreen({ compass = "dwork", sub, desc }) {
-  const meta = COMING_SOON_META[compass] || COMING_SOON_META.dwork;
   return (
     <Page wide>
       <div className="min-h-[calc(100vh-220px)] flex items-center justify-center px-6 py-12">
-        <div className="max-w-xl w-full text-center">
-          <div className={`relative inline-flex w-20 h-20 rounded-2xl bg-gradient-to-br ${meta.bg} text-white items-center justify-center mb-6 shadow-lift`}>
-            <Icon name={meta.icon} size={40} filled />
-            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white ring-2 ring-vnd-warning flex items-center justify-center">
-              <span className="w-2 h-2 rounded-full bg-vnd-warning animate-pulse-soft"></span>
-            </span>
-          </div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 ring-1 ring-amber-200 text-amber-800 text-[11px] uppercase tracking-wider font-bold mb-3">
-            <Icon name="schedule" size={12} />
-            Coming soon
-          </div>
-          <h1 className="font-display text-headline-lg text-vnd-primary-900">{sub}</h1>
-          <p className="text-body-md text-on-surface-variant mt-3 leading-relaxed">{desc}</p>
-
-          <div className="mt-7 grid grid-cols-3 gap-3 max-w-md mx-auto">
-            {["Đang thiết kế", "Đang xây dựng", "Sắp ra mắt"].map((t, i) => (
-              <div key={i} className={`rounded-xl px-3 py-3 ring-1
-                ${i === 0 ? "bg-emerald-50 ring-emerald-200 text-emerald-800" :
-                  i === 1 ? "bg-vnd-primary-50 ring-vnd-primary-200 text-vnd-primary-700" :
-                  "bg-surface-container-low ring-outline-variant/40 text-on-surface-variant"}`}>
-                <div className="flex items-center justify-center gap-1.5">
-                  <Icon name={i === 0 ? "check_circle" : i === 1 ? "settings" : "circle"} size={14} filled={i < 2} />
-                  <span className="text-[11.5px] font-semibold">{t}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-7 flex items-center justify-center gap-2">
-            <Button tone="primary" size="sm" icon="notifications_active">Đăng ký thông báo khi ra mắt</Button>
-            <Button tone="outline" size="sm" icon="forum">Góp ý sớm</Button>
-          </div>
-          <p className="text-[11px] text-on-surface-variant/70 mt-5 font-mono">Module này dự kiến mở khoá ở phiên bản kế tiếp.</p>
-        </div>
+        <h1 className="font-display text-headline-lg text-vnd-primary-900">Coming soon</h1>
       </div>
     </Page>
   );
