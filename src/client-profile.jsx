@@ -244,11 +244,6 @@ function ProfileLayout({ module, onModuleChange, groups, value, onChange, childr
           <span className="w-9 h-9 rounded-xl bg-vnd-primary-50 text-vnd-primary-700 flex items-center justify-center shrink-0"><Icon name={(activeItem && activeItem.icon) || activeGroup.icon} size={20} /></span>
           <div className="min-w-0">
             <h2 className="font-display text-headline-sm text-vnd-primary-900 leading-tight truncate">{(activeItem && activeItem.label) || activeGroup.label}</h2>
-            <p className="text-[12px] text-on-surface-variant flex items-center gap-1.5">
-              <Icon name={activeMod.icon} size={13} />{activeMod.full}
-              <span className="text-on-surface-variant/40">·</span><span>{activeGroup.label}</span>
-              {activeItem && activeItem.section && (<><span className="text-on-surface-variant/40">·</span><span>{activeItem.section}</span></>)}
-            </p>
           </div>
         </div>
         {children}
@@ -299,60 +294,6 @@ function ProfileHeader({ client, p, onAction }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="font-display text-headline-sm text-vnd-primary-900 leading-none">{client.name}</h2>
-            </div>
-            <div className="flex items-center gap-x-4 gap-y-0.5 mt-1.5 text-[12px] text-on-surface-variant flex-wrap">
-              <span className="inline-flex items-center gap-1.5"><Icon name="badge" size={13} />MSGD {client.id}</span>
-              <span className="inline-flex items-center gap-1.5"><Icon name="call" size={13} />{client.phone}</span>
-              <span className="inline-flex items-center gap-1.5"><Icon name="history" size={13} />Liên hệ cuối: {client.lastDays === 0 ? "Hôm nay" : client.lastDays + " ngày trước"}</span>
-            </div>
-          </div>
-          {/* CareBy dropdown + icon actions */}
-          <div className="flex flex-col items-end gap-2">
-            <div className="relative" ref={careRef}>
-              <button onClick={() => setCareOpen(o => !o)}
-                className="flex items-center gap-2 h-8 pl-2.5 pr-2 rounded-full hover:bg-surface-container-high transition-colors">
-                <span className="text-[11px] text-on-surface-variant font-medium">CareBy</span>
-                <div className="flex -space-x-1.5">
-                  {careBy.map(o => (
-                    <span key={o.code} className="ring-2 ring-surface rounded-full">
-                      <Avatar name={o.name} size={26} tone={o.tone} />
-                    </span>
-                  ))}
-                </div>
-                <Icon name="expand_more" size={16} className={`text-on-surface-variant transition-transform ${careOpen ? "rotate-180" : ""}`} />
-              </button>
-              {careOpen && (
-                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lift ring-1 ring-outline-variant/40 p-2 z-40 animate-fade-in">
-                  <div className="flex items-center justify-between px-2 py-1.5">
-                    <p className="text-[11px] uppercase tracking-wider text-on-surface-variant font-semibold">Đội ngũ chăm sóc · CareBy</p>
-                    <span className="text-[10px] font-bold rounded-full px-1.5 py-0.5 bg-surface-container-high text-on-surface-variant">{careBy.length}/{allCare.length}</span>
-                  </div>
-                  <ul className="space-y-0.5 mt-0.5">
-                    {allCare.map(o => (
-                      <li key={o.code} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-surface-container-low">
-                        {o.active
-                          ? <Avatar name={o.name} size={34} tone={o.tone} />
-                          : <span className="w-[34px] h-[34px] rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center"><Icon name="person_off" size={17} /></span>}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            <p className={`text-[13px] font-semibold truncate ${o.active ? "text-on-surface" : "text-on-surface-variant"}`}>{o.active ? o.name : "Chưa phân công"}</p>
-                            <Badge tone={o.active ? (o.tone === "blue" ? "blue" : o.tone === "green" ? "green" : o.tone === "amber" ? "amber" : "neutral") : "neutral"} size="xs">{o.code}</Badge>
-                          </div>
-                          <p className="text-[11px] text-on-surface-variant truncate">{o.role}</p>
-                        </div>
-                        {o.active
-                          ? <span className="inline-flex items-center gap-1 text-[10.5px] font-medium text-emerald-600"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Active</span>
-                          : <span className="text-[10.5px] text-on-surface-variant max-w-[88px] text-right leading-tight">{o.note}</span>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center gap-1.5">
-              <IconAction icon="call" label="Gọi" tone="primary" onClick={() => onAction?.("call")} />
-              <IconAction icon="note_add" label="Log touchpoint" onClick={() => onAction?.("log")} />
-              <IconAction icon="forum" label="Tư vấn" onClick={() => onAction?.("advise")} />
             </div>
           </div>
         </div>
