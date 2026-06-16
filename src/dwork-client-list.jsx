@@ -197,7 +197,7 @@ function ContextToggle({ mode, onChange }) {
 // 4 most-used identity fields stay on one line with Tìm kiếm; a dropdown
 // reveals the full set (all fields + account-open date range) in a popover,
 // so the cluster stays one row tall by default.
-const LOOKUP_INLINE_KEYS = ["name", "id", "phone", "cccd"];
+const LOOKUP_INLINE_KEYS = ["name", "id", "phone", "stk"];
 
 function LookupField({ f, value, onChange, onKey, compact }) {
   return (
@@ -247,13 +247,6 @@ function QuickSearchBar({ refine, onApply }) {
           </div>
         ))}
         <Button tone="primary" size="md" icon="search" onClick={submit} className="shrink-0 h-9">Tìm kiếm</Button>
-        <button onClick={() => setOpen(o => !o)} title="Tất cả tiêu chí tra cứu"
-          className={`relative inline-flex items-center gap-1 h-9 px-2.5 rounded-lg text-[12.5px] font-medium ring-1 transition-colors shrink-0
-            ${open || hiddenCount ? "bg-vnd-primary-50 text-vnd-primary-700 ring-vnd-primary-200" : "bg-white text-on-surface-variant ring-outline-variant/50 hover:bg-surface-container-low"}`}>
-          <Icon name="tune" size={16} />
-          {hiddenCount > 0 && <span className="inline-flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-vnd-primary-500 text-white text-[9.5px] font-bold font-mono">{hiddenCount}</span>}
-          <Icon name="expand_more" size={15} className={`transition-transform ${open ? "rotate-180" : ""}`} />
-        </button>
         {anyVal && (
           <button onClick={() => { setD(blankLookup()); onApply({ q: "", refine: {} }); }}
             className="inline-flex items-center gap-1 h-9 px-2.5 rounded-lg text-[12px] font-medium text-on-surface-variant hover:text-red-600 hover:bg-red-50 transition-colors shrink-0">
@@ -709,23 +702,10 @@ function ActiveClients({ onOpen }) {
         <div>
           <h2 className="font-display text-headline-md text-vnd-primary-900 leading-tight">Danh sách khách hàng</h2>
         </div>
-        <ContextToggle mode={mode} onChange={setMode} />
       </div>
 
       {/* ===== (1) TRA CỨU NHANH — full identity lookup ===== */}
       <QuickSearchBar refine={refine} onApply={applySearch} />
-
-      {/* ===== (2) ACTION ROW — filter entry · saved views · export ===== */}
-      <div className="flex items-center gap-2 mb-3 flex-wrap">
-        {/* (2) FILTER — "Bộ lọc" opens the advanced condition modal directly */}
-        <AdvancedFilter value={filter} onChange={applyFilter} open={advOpen} onOpenChange={setAdvOpen} />
-
-        <div className="ml-auto flex items-center gap-2">
-          <SaveConfigButton disabled={!hasAnyCriteria} onSave={saveConfig} />
-          <SavedConfigsMenu configs={configs} activeId={activeConfig}
-            onApply={applyConfig} onRename={renameConfig} onDelete={deleteConfig} />
-        </div>
-      </div>
 
       {/* ===== (3) BỘ LỌC ĐANG DÙNG — applied criteria as chips ===== */}
       {hasAnyCriteria && (
