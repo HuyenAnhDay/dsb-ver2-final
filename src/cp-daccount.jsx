@@ -175,8 +175,8 @@
             <SummaryRow label="Tổng nợ" info value={fmtVnd(totalDebt)} />
             <SummaryRow label="Tài sản ròng" info value={fmtVnd(netWorth)} />
           </div>
-          <div className={subAccount ? "divide-y divide-outline-variant/20" : ""}>
-            {subAccount && <SummaryRow label="Tiền được rút theo sức mua" value={fmtVnd(buyingPower)} />}
+          <div className="divide-y divide-outline-variant/20">
+            <SummaryRow label="Tiền được rút theo sức mua" value={fmtVnd(buyingPower)} />
             <div className="flex items-center justify-between py-1.5">
               <span className="text-[12.5px] text-on-surface-variant">Nợ / Tài sản</span>
               <span className="font-mono tabular-nums text-[13.5px] font-semibold text-vnd-primary-700">{debtRatio.toFixed(1).replace(/\.0$/, "")}%</span>
@@ -267,20 +267,11 @@
             <button className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-[13px] font-medium bg-white ring-1 ring-outline-variant/60 text-emerald-700 hover:bg-emerald-50">
               <Icon name="description" size={16} /><span>Xuất excel</span>
             </button>
-            <button className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-[13px] font-medium bg-white ring-1 ring-outline-variant/60 text-red-600 hover:bg-red-50">
-              <Icon name="print" size={16} /><span>In báo cáo</span>
-            </button>
-            <button className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg text-[13px] font-semibold bg-vnd-primary-500 text-white hover:bg-vnd-primary-700 shadow-xs">
-              <Icon name="mail" size={16} /><span>Gửi Email</span>
-            </button>
           </div>
         </div>
 
         {subAccount ? (
-          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px] gap-4 items-start">
-            <div className="space-y-4 min-w-0">{SummaryBand}{TreeCard}</div>
-            {SideRail}
-          </div>
+          <div className="space-y-4 min-w-0">{SummaryBand}{TreeCard}</div>
         ) : (
           <>{SummaryBand}{TreeCard}</>
         )}
@@ -288,21 +279,237 @@
     );
   }
   function PortfolioPanel({ client }) {
+    const acc = "0101" + (client.id || "00012345").toString().slice(-6);
+    const fmt = (n) => n == null ? "—" : n.toLocaleString("vi-VN");
+    const today = "16/06/2026";
+
+    // ---- sample data ----
+    const cashRows = [
+      { acc, total: 590000000, baseCash: 560000000, derivCash: 0,
+        sellPending: 22000000, divPending: 8000000, derivWithdraw: 0, bondReturn: 12000000, otherReturn: 0,
+        buyMatch: 10000000, derivDeposit: 0, otherLock: 0 }
+    ];
+    const secRows = [
+      { acc, code: "FPT", type: "Cổ phiếu", total: 8000, maxSell: 8000, costPrice: 69500, costValue: 556000000, mktPrice: 138000, mktValue: 1104000000, pnl: 548000000, pnlPct: 98.6, waitCustody: 0, waitTrade: 0, buyReturn: 0, rightReturn: 0, sellUnmatched: 0, pledge: 0, transferPending: 0, withdrawPending: 0, otherLock: 0 },
+      { acc, code: "HPG", type: "Cổ phiếu", total: 12000, maxSell: 12000, costPrice: 27800, costValue: 333600000, mktPrice: 28950, mktValue: 347400000, pnl: 13800000, pnlPct: 4.1, waitCustody: 0, waitTrade: 0, buyReturn: 0, rightReturn: 0, sellUnmatched: 0, pledge: 0, transferPending: 0, withdrawPending: 0, otherLock: 0 },
+      { acc, code: "E1VFVN30", type: "CCQ ETF", type2: true, total: 5000, maxSell: 5000, costPrice: 26000, costValue: 130000000, mktPrice: 27400, mktValue: 137000000, pnl: 7000000, pnlPct: 5.4, waitCustody: 0, waitTrade: 0, buyReturn: 0, rightReturn: 0, sellUnmatched: 0, pledge: 0, transferPending: 0, withdrawPending: 0, otherLock: 0 }
+    ];
+    const bondRows = [
+      { acc, code: "DBOND2027", coupon: 8.5, maturity: "15/09/2027", qty: 1800, sellable: 1800, avgPrice: 100000, buyValue: 180000000, curValue: 186300000, custody: "Đã lưu ký" },
+      { acc, code: "VBOND2026", coupon: 7.2, maturity: "20/12/2026", qty: 600, sellable: 600, avgPrice: 100000, buyValue: 60000000, curValue: 61450000, custody: "Đã lưu ký" }
+    ];
+
+    const TH = ({ children, span, rows, className = "", align = "center" }) => (
+      <th colSpan={span} rowSpan={rows}
+        className={`border border-outline-variant/40 bg-surface-container-low px-3 py-2 text-[11.5px] font-semibold text-on-surface text-${align} whitespace-nowrap align-middle ${className}`}>{children}</th>
+    );
+    const TD = ({ children, align = "right", className = "" }) => (
+      <td className={`border border-outline-variant/30 px-3 py-2 text-[12px] text-${align} whitespace-nowrap ${className}`}>{children}</td>
+    );
+    const SectionHead = ({ children }) => (
+      <h3 className="text-[12.5px] font-bold uppercase tracking-wide text-amber-700 mb-2.5">{children}</h3>
+    );
+    const FilterChip = ({ label }) => (
+      <div className="relative inline-block mb-2.5">
+        <select className="appearance-none h-8 pl-3 pr-8 rounded-lg text-[12px] bg-white ring-1 ring-outline-variant/60 text-on-surface-variant focus:outline-none">
+          <option>{label}</option>
+        </select>
+        <Icon name="expand_more" size={16} className="absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+      </div>
+    );
+
     return (
-      <CPCard title="Danh mục tài sản" sub="Phân bổ theo asset class (tại VNDS)" icon="donut_small">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <DonutChart data={ALLOCATION} size={170} thickness={22} centerValue={trToTy(client.nav).split(" ")[0]} centerLabel="NAV" />
-          <ul className="flex-1 w-full space-y-2">
-            {ALLOCATION.map(a => (
-              <li key={a.label} className="flex items-center gap-2 text-[12.5px]">
-                <span className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: a.color }}></span>
-                <span className="flex-1 min-w-0">{a.label}</span>
-                <span className="font-mono text-on-surface-variant">{a.pct}%</span>
-              </li>
-            ))}
-          </ul>
+      <div className="space-y-4">
+        {/* Toolbar */}
+        <div className="bg-white rounded-2xl shadow-soft ring-1 ring-vnd-primary-900/5 px-4 py-3 flex flex-wrap items-center gap-2">
+          <div className="relative">
+            <select className="appearance-none h-9 pl-3 pr-9 rounded-lg text-[13px] bg-white ring-1 ring-outline-variant/60 text-on-surface focus:outline-none min-w-[200px]">
+              <option>Tất cả các tài khoản</option>
+            </select>
+            <Icon name="expand_more" size={18} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+          </div>
+          <div className="relative">
+            <input readOnly value={today}
+              className="h-9 pl-3 pr-9 rounded-lg text-[13px] bg-white ring-1 ring-outline-variant/60 text-on-surface focus:outline-none w-[160px]" />
+            <Icon name="calendar_today" size={16} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+          </div>
+          <div className="relative">
+            <select className="appearance-none h-9 pl-3 pr-9 rounded-lg text-[13px] bg-white ring-1 ring-outline-variant/60 text-on-surface-variant focus:outline-none min-w-[180px]">
+              <option>Chọn sản phẩm</option>
+            </select>
+            <Icon name="expand_more" size={18} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+          </div>
+          <button className="inline-flex items-center gap-2 h-9 px-3 rounded-lg text-[13px] bg-white ring-1 ring-outline-variant/60 text-on-surface hover:bg-surface-container-low">
+            <Icon name="refresh" size={16} /><span>Làm mới</span>
+          </button>
         </div>
-      </CPCard>
+
+        {/* Description */}
+        <div className="text-[12px] text-on-surface-variant leading-relaxed px-0.5">
+          <p>Danh mục hiện tại tổng hợp chi tiết cấu phần từng loại tài sản của Khách hàng tại thời điểm xem báo cáo</p>
+          <p>Danh mục được tổng hợp theo trạng thái giao dịch, không thể hiện tính sở hữu với loại hình tài sản của khách hàng</p>
+        </div>
+
+        {/* ===== DANH MỤC TIỀN ===== */}
+        <div className="bg-white rounded-2xl shadow-soft ring-1 ring-vnd-primary-900/5 p-5">
+          <SectionHead>Danh mục tiền</SectionHead>
+          <div className="overflow-x-auto scrollbar-thin">
+            <table className="border-collapse min-w-[1100px] w-full">
+              <thead>
+                <tr>
+                  <TH rows={2}>Số tài khoản</TH>
+                  <TH rows={2}>Tổng tiền</TH>
+                  <TH span={2}>Tiền thực có</TH>
+                  <TH span={5}>Tiền chờ về</TH>
+                  <TH span={3}>Tiền phong tỏa</TH>
+                </tr>
+                <tr>
+                  <TH>Số dư tiền tài khoản cơ sở</TH>
+                  <TH>Số dư tiền tài khoản phái sinh</TH>
+                  <TH>Bán chờ về</TH>
+                  <TH>Cổ tức chờ về</TH>
+                  <TH>Chờ rút ký quỹ phái sinh</TH>
+                  <TH>Chờ về trái phiếu</TH>
+                  <TH>Chờ về khác</TH>
+                  <TH>Mua chờ khớp</TH>
+                  <TH>Chờ nộp ký quỹ phái sinh</TH>
+                  <TH>Phong tỏa khác</TH>
+                </tr>
+              </thead>
+              <tbody>
+                {cashRows.map((r, i) => (
+                  <tr key={i} className="hover:bg-surface-container-low/50">
+                    <TD align="left" className="font-mono">{r.acc}</TD>
+                    <TD className="font-mono font-semibold">{fmt(r.total)}</TD>
+                    <TD className="font-mono">{fmt(r.baseCash)}</TD>
+                    <TD className="font-mono">{fmt(r.derivCash)}</TD>
+                    <TD className="font-mono">{fmt(r.sellPending)}</TD>
+                    <TD className="font-mono">{fmt(r.divPending)}</TD>
+                    <TD className="font-mono">{fmt(r.derivWithdraw)}</TD>
+                    <TD className="font-mono">{fmt(r.bondReturn)}</TD>
+                    <TD className="font-mono">{fmt(r.otherReturn)}</TD>
+                    <TD className="font-mono">{fmt(r.buyMatch)}</TD>
+                    <TD className="font-mono">{fmt(r.derivDeposit)}</TD>
+                    <TD className="font-mono">{fmt(r.otherLock)}</TD>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* ===== DANH MỤC CHỨNG KHOÁN CƠ SỞ ===== */}
+        <div className="bg-white rounded-2xl shadow-soft ring-1 ring-vnd-primary-900/5 p-5">
+          <SectionHead>Danh mục chứng khoán cơ sở (cổ phiếu, chứng chỉ quỹ đóng)</SectionHead>
+          <FilterChip label="Mã chứng khoán" />
+          <div className="overflow-x-auto scrollbar-thin">
+            <table className="border-collapse min-w-[1900px] w-full">
+              <thead>
+                <tr>
+                  <TH rows={2}>Số tài khoản</TH>
+                  <TH rows={2}>Mã CK</TH>
+                  <TH rows={2}>Loại CK</TH>
+                  <TH rows={2}>Tổng SLCK</TH>
+                  <TH rows={2}>SLCK tối đa được bán</TH>
+                  <TH rows={2}>Giá vốn</TH>
+                  <TH rows={2}>Giá trị vốn</TH>
+                  <TH rows={2}>Giá thị trường</TH>
+                  <TH rows={2}>Giá trị thị trường</TH>
+                  <TH rows={2}>Lãi/Lỗ</TH>
+                  <TH rows={2}>% Lãi/Lỗ</TH>
+                  <TH rows={2}>SLCK chờ lưu ký</TH>
+                  <TH rows={2}>SLCK chờ giao dịch</TH>
+                  <TH span={2}>SLCK chờ về</TH>
+                  <TH span={5}>SLCK phong tỏa</TH>
+                </tr>
+                <tr>
+                  <TH>SLCK mua chờ về</TH>
+                  <TH>SLCK hưởng quyền chờ về</TH>
+                  <TH>SLCK bán chưa khớp</TH>
+                  <TH>SLCK cầm cố</TH>
+                  <TH>SLCK chờ chuyển</TH>
+                  <TH>SLCK chờ rút</TH>
+                  <TH>SLCK phong tỏa khác</TH>
+                </tr>
+              </thead>
+              <tbody>
+                {secRows.map((r, i) => (
+                  <tr key={i} className="hover:bg-surface-container-low/50">
+                    <TD align="left" className="font-mono">{r.acc}</TD>
+                    <TD align="left" className="font-semibold text-vnd-primary-700">{r.code}</TD>
+                    <TD align="left">{r.type}</TD>
+                    <TD className="font-mono">{fmt(r.total)}</TD>
+                    <TD className="font-mono">{fmt(r.maxSell)}</TD>
+                    <TD className="font-mono">{fmt(r.costPrice)}</TD>
+                    <TD className="font-mono">{fmt(r.costValue)}</TD>
+                    <TD className="font-mono">{fmt(r.mktPrice)}</TD>
+                    <TD className="font-mono">{fmt(r.mktValue)}</TD>
+                    <TD className={`font-mono font-semibold ${r.pnl >= 0 ? "text-emerald-600" : "text-red-600"}`}>{r.pnl >= 0 ? "+" : ""}{fmt(r.pnl)}</TD>
+                    <TD className={`font-mono font-semibold ${r.pnl >= 0 ? "text-emerald-600" : "text-red-600"}`}>{r.pnl >= 0 ? "+" : ""}{r.pnlPct}%</TD>
+                    <TD className="font-mono">{fmt(r.waitCustody)}</TD>
+                    <TD className="font-mono">{fmt(r.waitTrade)}</TD>
+                    <TD className="font-mono">{fmt(r.buyReturn)}</TD>
+                    <TD className="font-mono">{fmt(r.rightReturn)}</TD>
+                    <TD className="font-mono">{fmt(r.sellUnmatched)}</TD>
+                    <TD className="font-mono">{fmt(r.pledge)}</TD>
+                    <TD className="font-mono">{fmt(r.transferPending)}</TD>
+                    <TD className="font-mono">{fmt(r.withdrawPending)}</TD>
+                    <TD className="font-mono">{fmt(r.otherLock)}</TD>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex items-end justify-between mt-2.5 gap-3">
+            <p className="text-[11.5px] italic text-on-surface-variant">Số lượng cổ tức, cổ phiếu đã về tài khoản, được phép giao dịch. Khi bán sẽ chịu thuế TNCN 5%</p>
+            <button disabled className="text-[12px] text-on-surface-variant/40 cursor-not-allowed whitespace-nowrap shrink-0">Xem thêm</button>
+          </div>
+        </div>
+
+        {/* ===== DANH MỤC TRÁI PHIẾU VBOND ===== */}
+        <div className="bg-white rounded-2xl shadow-soft ring-1 ring-vnd-primary-900/5 p-5">
+          <SectionHead>Danh mục trái phiếu VBond</SectionHead>
+          <FilterChip label="Mã trái phiếu" />
+          <div className="overflow-x-auto scrollbar-thin">
+            <table className="border-collapse min-w-[1100px] w-full">
+              <thead>
+                <tr>
+                  <TH>Số tài khoản</TH>
+                  <TH>Mã VBond</TH>
+                  <TH>Lãi suất coupon trái phiếu (%/năm)</TH>
+                  <TH>Ngày đáo hạn</TH>
+                  <TH>SLTP</TH>
+                  <TH>SLTP có thể bán</TH>
+                  <TH>Giá mua bình quân</TH>
+                  <TH>Giá trị mua</TH>
+                  <TH>Giá trị hiện tại</TH>
+                  <TH>Trạng thái lưu ký</TH>
+                </tr>
+              </thead>
+              <tbody>
+                {bondRows.map((r, i) => (
+                  <tr key={i} className="hover:bg-surface-container-low/50">
+                    <TD align="left" className="font-mono">{r.acc}</TD>
+                    <TD align="left" className="font-semibold text-vnd-primary-700">{r.code}</TD>
+                    <TD className="font-mono">{r.coupon}%</TD>
+                    <TD align="center" className="font-mono">{r.maturity}</TD>
+                    <TD className="font-mono">{fmt(r.qty)}</TD>
+                    <TD className="font-mono">{fmt(r.sellable)}</TD>
+                    <TD className="font-mono">{fmt(r.avgPrice)}</TD>
+                    <TD className="font-mono">{fmt(r.buyValue)}</TD>
+                    <TD className="font-mono">{fmt(r.curValue)}</TD>
+                    <TD align="center"><Badge tone="green" size="xs">{r.custody}</Badge></TD>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex items-end justify-between mt-2.5 gap-3">
+            <p className="text-[11.5px] italic text-on-surface-variant">Số tiền lãi dự tính đến ngày hiện tại là tổng tiền lãi coupon của mã trái phiếu của tất cả giao dịch tính đến ngày báo cáo, chưa khấu trừ các chi phí về phí giao dịch và thuế từ lãi coupon</p>
+            <button disabled className="text-[12px] text-on-surface-variant/40 cursor-not-allowed whitespace-nowrap shrink-0">Xem thêm</button>
+          </div>
+        </div>
+      </div>
     );
   }
   function GrowthPanel() {
@@ -436,30 +643,140 @@
 
   // ===== Nợ =====
   function DebtStatusPanel() {
-    const dd = CP_DATA.debtDetail, d = CP_DATA.debt;
-    const marginPct = Math.round((d.marginUsed / d.marginLimit) * 100);
+    const fmt = (n) => n.toLocaleString("vi-VN");
+    const acc = "0000122929";
+    const groups = [
+      { label: "Tiền", rows: [
+        { desc: "Tiền mặt", tsdb: 300000000, mkt: 200000000, total: 300000000, loanRatio: 0.03, tsdbRatio: 0.05, tsdbPrice: 450000000, totalTsdb: 1000000000 },
+        { desc: "Số tiền tạm giữ", tsdb: 300000000, mkt: 200000000, total: 300000000, loanRatio: 0.03, tsdbRatio: 0.05, tsdbPrice: 450000000, totalTsdb: 1000000000 }
+      ] },
+      { label: "Nợ", rows: [
+        { desc: "Số tiền tạm giữ", tsdb: 300000000, mkt: 200000000, total: 300000000, loanRatio: 0.03, tsdbRatio: 0.05, tsdbPrice: 450000000, totalTsdb: 1000000000 }
+      ] },
+      { label: "Chứng khoán", rows: [
+        { desc: "Số tiền tạm giữ", tsdb: 300000000, mkt: 200000000, total: 300000000, loanRatio: 0.03, tsdbRatio: 0.05, tsdbPrice: 450000000, totalTsdb: 1000000000 },
+        { desc: "Số tiền tạm giữ", tsdb: 300000000, mkt: 200000000, total: 300000000, loanRatio: 0.03, tsdbRatio: 0.05, tsdbPrice: 450000000, totalTsdb: 1000000000 },
+        { desc: "Số tiền tạm giữ", tsdb: 300000000, mkt: 200000000, total: 300000000, loanRatio: 0.03, tsdbRatio: 0.05, tsdbPrice: 450000000, totalTsdb: 1000000000 },
+        { desc: "Số tiền tạm giữ", tsdb: 300000000, mkt: 200000000, total: 300000000, loanRatio: 0.03, tsdbRatio: 0.05, tsdbPrice: 450000000, totalTsdb: 1000000000 }
+      ] }
+    ];
+    const grandMkt = 2100000000, grandTsdb = 7000000000;
+    const cols = ["Số tài khoản", "Diễn giải", "Tài sản đảm bảo", "Giá thị trường", "Tổng giá trị", "Tỉ lệ cho vay", "Tỉ lệ tính TSđB", "Giá tính TSđB", "Tổng TS đảm bảo"];
+
     return (
-      <div className="grid grid-cols-12 gap-4">
-        <CPCard title="Báo cáo trạng thái tài khoản (nợ)" sub="Tỷ lệ ký quỹ & ngưỡng cảnh báo" icon="health_and_safety" className="col-span-12 lg:col-span-6">
-          <div className="flex items-center gap-2 mb-4"><Badge tone="green" size="md" icon="check_circle">{dd.status}</Badge></div>
-          <div className="space-y-3">
+      <div className="space-y-4">
+        {/* Toolbar */}
+        <div className="bg-white rounded-2xl shadow-soft ring-1 ring-vnd-primary-900/5 px-4 py-3">
+          <div className="flex flex-wrap items-end gap-3">
             <div>
-              <div className="flex items-center justify-between mb-1"><span className="text-[12px] text-on-surface-variant">Tỷ lệ ký quỹ hiện tại</span><span className="font-mono text-[12px] font-bold">{dd.marginRatio}%</span></div>
-              <div className="relative h-2.5 bg-surface-container-high rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-500 rounded-full" style={{ width: dd.marginRatio + "%" }}></div>
-              </div>
-              <div className="flex items-center justify-between text-[10.5px] text-on-surface-variant mt-1">
-                <span>An toàn</span><span className="text-amber-700">Call {dd.callLevel}%</span><span className="text-red-700">Force {dd.forceLevel}%</span>
+              <label className="block text-[11.5px] font-medium text-on-surface-variant mb-1">Tài khoản</label>
+              <div className="relative">
+                <select className="appearance-none h-9 pl-3 pr-9 rounded-lg text-[13px] bg-white ring-1 ring-outline-variant/60 text-on-surface focus:outline-none min-w-[200px]">
+                  <option>2827389112</option>
+                </select>
+                <Icon name="expand_more" size={18} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
               </div>
             </div>
+            <div>
+              <label className="block text-[11.5px] font-medium text-on-surface-variant mb-1">Thời gian</label>
+              <div className="relative">
+                <input readOnly value="08/12/2023"
+                  className="h-9 pl-3 pr-9 rounded-lg text-[13px] bg-white ring-1 ring-outline-variant/60 text-on-surface focus:outline-none w-[170px]" />
+                <Icon name="calendar_today" size={16} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+              </div>
+            </div>
+            <div className="relative">
+              <Icon name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+              <input placeholder="Tìm kiếm nội dung diễn giải"
+                className="h-9 pl-9 pr-3 rounded-lg text-[13px] bg-white ring-1 ring-outline-variant/60 text-on-surface focus:outline-none w-[240px]" />
+            </div>
+            <button className="inline-flex items-center gap-2 h-9 px-3 rounded-lg text-[13px] bg-white ring-1 ring-vnd-warning/50 text-vnd-warning hover:bg-amber-50">
+              <Icon name="refresh" size={16} /><span>Làm mới</span>
+            </button>
+            <div className="ml-auto flex items-center gap-2">
+              <button className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-[13px] font-medium bg-white ring-1 ring-outline-variant/60 text-emerald-700 hover:bg-emerald-50">
+                <Icon name="description" size={16} /><span>Xuất excel</span>
+              </button>
+              <button className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-[13px] font-medium bg-white ring-1 ring-outline-variant/60 text-red-600 hover:bg-red-50">
+                <Icon name="picture_as_pdf" size={16} /><span>Xuất PDF</span>
+              </button>
+              <button className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg text-[13px] font-semibold bg-vnd-warning text-white hover:brightness-95">
+                <Icon name="mail" size={16} /><span>Gửi email</span>
+              </button>
+            </div>
           </div>
-        </CPCard>
-        <CPCard title="Margin" sub="Hạn mức & sử dụng" icon="credit_card" className="col-span-12 lg:col-span-6">
-          <div className="flex items-center justify-between mb-1.5"><CPLabel>Đã dùng / Hạn mức</CPLabel><span className="font-mono text-[12px] font-bold">{trToTy(d.marginUsed)} / {trToTy(d.marginLimit)}</span></div>
-          <div className="h-2.5 bg-surface-container-high rounded-full overflow-hidden mb-3"><div className={`h-full rounded-full ${marginPct >= 80 ? "bg-red-500" : "bg-vnd-primary-500"}`} style={{ width: marginPct + "%" }}></div></div>
-          <KVRow label="Lãi suất vay" value={d.rate} />
-          <KVRow label="Dư nợ khả dụng còn lại" value={trToTy(d.marginLimit - d.marginUsed)} />
-        </CPCard>
+          {/* Summary */}
+          <div className="mt-3 space-y-0.5 text-[12.5px]">
+            <div className="flex"><span className="text-on-surface-variant w-[160px]">Tỉ lệ thực tế(%):</span><span className="font-mono">102.2</span></div>
+            <div className="flex"><span className="text-on-surface-variant w-[160px]">Tổng giá trị TSĐB (VND):</span><span className="font-mono">1,123,234,567</span></div>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="bg-white rounded-2xl shadow-soft ring-1 ring-vnd-primary-900/5 overflow-hidden">
+          <div className="overflow-x-auto scrollbar-thin">
+            <table className="min-w-[1100px] w-full text-[12.5px]">
+              <thead>
+                <tr className="bg-surface-container-low text-on-surface">
+                  {cols.map((c, i) => (
+                    <th key={i} className={`px-3 py-2.5 font-semibold whitespace-nowrap ${i < 2 ? "text-left" : "text-right"}`}>{c}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {groups.map((g, gi) => (
+                  <React.Fragment key={gi}>
+                    <tr className="bg-surface-container-high/70">
+                      <td colSpan={cols.length} className="px-3 py-2 font-semibold text-on-surface">{g.label}</td>
+                    </tr>
+                    {g.rows.map((r, ri) => (
+                      <tr key={ri} className="border-t border-outline-variant/30 hover:bg-surface-container-low/50">
+                        <td className="px-3 py-2.5 font-mono whitespace-nowrap">{acc}</td>
+                        <td className="px-3 py-2.5">{r.desc}</td>
+                        <td className="px-3 py-2.5 text-right font-mono">{fmt(r.tsdb)}</td>
+                        <td className="px-3 py-2.5 text-right font-mono">{fmt(r.mkt)}</td>
+                        <td className="px-3 py-2.5 text-right font-mono">{fmt(r.total)}</td>
+                        <td className="px-3 py-2.5 text-right font-mono">{r.loanRatio}</td>
+                        <td className="px-3 py-2.5 text-right font-mono">{r.tsdbRatio}</td>
+                        <td className="px-3 py-2.5 text-right font-mono">{fmt(r.tsdbPrice)}</td>
+                        <td className="px-3 py-2.5 text-right font-mono">{fmt(r.totalTsdb)}</td>
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                ))}
+                <tr className="border-t-2 border-outline-variant/50 font-semibold">
+                  <td className="px-3 py-2.5">Tổng cộng</td>
+                  <td></td>
+                  <td></td>
+                  <td className="px-3 py-2.5 text-right font-mono">{fmt(grandMkt)}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td className="px-3 py-2.5 text-right font-mono">{fmt(grandTsdb)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          {/* Pagination */}
+          <div className="flex items-center justify-end gap-4 px-4 py-3 border-t border-outline-variant/30 text-[12.5px] text-on-surface-variant">
+            <span>Tổng 70 đơn</span>
+            <div className="flex items-center gap-1">
+              <button className="w-7 h-7 rounded-md hover:bg-surface-container-low flex items-center justify-center"><Icon name="chevron_left" size={16} /></button>
+              {[8, 9, 10, 11, 12].map((p, i) => (
+                <button key={p} className={`min-w-[28px] h-7 px-1.5 rounded-md text-[12.5px] ${i === 0 ? "ring-1 ring-vnd-warning text-vnd-warning font-semibold" : "hover:bg-surface-container-low"}`}>{p}</button>
+              ))}
+              <span className="px-1">…</span>
+              <button className="w-7 h-7 rounded-md hover:bg-surface-container-low flex items-center justify-center"><Icon name="chevron_right" size={16} /></button>
+            </div>
+            <div className="relative">
+              <select className="appearance-none h-7 pl-2.5 pr-7 rounded-md text-[12.5px] bg-white ring-1 ring-outline-variant/60 focus:outline-none">
+                <option>10 / trang</option>
+              </select>
+              <Icon name="expand_more" size={15} className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -570,27 +887,10 @@
     const groups = [
       { id: "ov", label: "Tổng quan", icon: "dashboard", items: [
         { id: "ov:report", label: "Báo cáo tài sản", icon: "account_balance_wallet" },
-        { id: "ov:portfolio", label: "Danh mục tài sản", icon: "donut_small" },
-        { id: "ov:growth", label: "Tăng trưởng tài sản", icon: "show_chart" },
-        { id: "ov:balance", label: "Balance sheet", icon: "balance" }
-      ] },
-      { id: "sec", label: "Chứng khoán", icon: "candlestick_chart", items: [
-        { id: "sec:balance", label: "Báo cáo số dư CK", icon: "inventory" },
-        { id: "sec:account", label: "Tài khoản giao dịch CK", icon: "account_balance" }
-      ] },
-      { id: "cash", label: "Tiền", icon: "payments", items: [
-        { id: "cash:statement", label: "Sao kê tiền", icon: "receipt_long" },
-        { id: "cash:flow", label: "Lịch dòng tiền", icon: "calendar_month" }
+        { id: "ov:portfolio", label: "Danh mục tài sản", icon: "donut_small" }
       ] },
       { id: "debt", label: "Nợ", icon: "credit_card", items: [
-        { id: "debt:status", label: "Trạng thái tài khoản (nợ)", icon: "health_and_safety" },
-        { id: "debt:report", label: "Báo cáo nợ", icon: "summarize" },
-        { id: "debt:statement", label: "Sao kê nợ", icon: "receipt_long" },
-        { id: "debt:interest", label: "Bảng kê lãi vay", icon: "percent" }
-      ] },
-      { id: "perf", label: "Hiệu suất", icon: "leaderboard", items: [
-        { id: "perf:realized", label: "Lãi lỗ đã thực hiện", icon: "trending_up" },
-        { id: "perf:events", label: "Lịch sự kiện", icon: "event" }
+        { id: "debt:status", label: "Báo cáo trạng thái tài khoản nợ", icon: "health_and_safety" }
       ] }
     ];
     const [active, setActive] = useState("ov:report");
