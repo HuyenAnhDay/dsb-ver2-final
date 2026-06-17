@@ -175,8 +175,8 @@
             <SummaryRow label="Tổng nợ" info value={fmtVnd(totalDebt)} />
             <SummaryRow label="Tài sản ròng" info value={fmtVnd(netWorth)} />
           </div>
-          <div className="divide-y divide-outline-variant/20">
-            <SummaryRow label="Tiền được rút theo sức mua" value={fmtVnd(buyingPower)} />
+          <div className={subAccount ? "divide-y divide-outline-variant/20" : ""}>
+            {subAccount && <SummaryRow label="Tiền được rút theo sức mua" value={fmtVnd(buyingPower)} />}
             <div className="flex items-center justify-between py-1.5">
               <span className="text-[12.5px] text-on-surface-variant">Nợ / Tài sản</span>
               <span className="font-mono tabular-nums text-[13.5px] font-semibold text-vnd-primary-700">{debtRatio.toFixed(1).replace(/\.0$/, "")}%</span>
