@@ -50,6 +50,7 @@ const LIST_SEED = _LIST_RAW.map(([name, customerId, stk, tone], i) => {
     profileId: _PROFILE_IDS[i % _PROFILE_IDS.length], // opens a rich mock profile
     name, stk, tone,
     nvcs: "Môi giới test",
+    openDate: String((n % 28) + 1).padStart(2, "0") + "/" + String((n % 12) + 1).padStart(2, "0") + "/" + (2018 + (n % 8)),
     custody: "06C" + digits.slice(-6),
     cif: "CIF" + digits,
     cccd: "0" + digits + String(100 + (n % 900)),
@@ -624,6 +625,9 @@ function ActiveClients({ onOpen }) {
         let cmp;
         if (sortKey === "name") {
           cmp = String(a.name).localeCompare(String(b.name), "vi");
+        } else if (sortKey === "openDate") {
+          const toTs = (s) => { const [d, m, y] = String(s).split("/"); return new Date(+y, +m - 1, +d).getTime(); };
+          cmp = toTs(a.openDate) - toTs(b.openDate);
         } else if (sortKey === "id" || sortKey === "stk" || sortKey === "nvcs") {
           cmp = String(a[sortKey]).localeCompare(String(b[sortKey]));
         } else {
@@ -740,7 +744,7 @@ function ActiveClients({ onOpen }) {
                 <Th k="name" w="38%">Tên khách hàng</Th>
                 <Th k="id" w="22%">Customer Id</Th>
                 <Th k="stk" w="22%">STK giao dịch</Th>
-                <Th k="nvcs" w="18%">NVCS</Th>
+                <Th k="openDate" w="18%">Ngày mở tài khoản</Th>
               </tr>
             </thead>
             <tbody>
@@ -765,9 +769,9 @@ function ActiveClients({ onOpen }) {
                     <td className="px-4 py-2.5 whitespace-nowrap">
                       <span className="font-mono text-[13px] text-vnd-primary-700">{c.stk}</span>
                     </td>
-                    {/* NVCS — nhân viên chăm sóc */}
+                    {/* Ngày mở tài khoản */}
                     <td className="px-4 py-2.5 whitespace-nowrap">
-                      <span className="text-[13px] text-on-surface-variant">{c.nvcs}</span>
+                      <span className="text-[13px] text-on-surface-variant font-mono">{c.openDate}</span>
                     </td>
                   </tr>
                 );
