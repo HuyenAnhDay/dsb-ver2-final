@@ -33,19 +33,8 @@ function buildProfile(client) {
 function CPCard({ title, sub, icon, action, children, className = "" }) {
   return (
     <section className={`bg-white rounded-2xl shadow-soft ring-1 ring-vnd-primary-900/5 p-5 ${className}`}>
-      {(title || action) && (
-        <div className="flex items-start justify-between gap-3 mb-4">
-          <div className="flex items-center gap-2.5 min-w-0">
-            {icon && (
-              <span className="w-8 h-8 shrink-0 rounded-lg bg-vnd-primary-50 text-vnd-primary-700 flex items-center justify-center">
-                <Icon name={icon} size={18} />
-              </span>
-            )}
-            <div className="min-w-0">
-              <h3 className="font-display text-title-md text-vnd-primary-900 leading-tight">{title}</h3>
-              {sub && <p className="text-[12px] text-on-surface-variant mt-0.5">{sub}</p>}
-            </div>
-          </div>
+      {action && (
+        <div className="flex items-start justify-end gap-3 mb-4">
           {action}
         </div>
       )}
@@ -216,15 +205,7 @@ function ProfilePageNav({ module, onModuleChange, groups, value, onChange }) {
         </div>
 
         {/* search within customer */}
-        <div className="relative ml-auto py-1.5">
-          <button onClick={() => setSearchOpen(o => !o)} title="Tìm trong hồ sơ khách hàng"
-            className={`inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[12px] font-medium ring-1 transition-colors
-              ${searchOpen ? "bg-vnd-primary-50 text-vnd-primary-700 ring-vnd-primary-200" : "bg-white text-on-surface-variant ring-outline-variant/50 hover:bg-surface-container-low"}`}>
-            <Icon name="search" size={15} />
-            <span className="hidden md:inline">Tìm trong hồ sơ</span>
-          </button>
-          {searchOpen && <ProfileSearch groups={groups} module={activeMod} onPick={(id) => { onChange(id); setSearchOpen(false); }} onClose={() => setSearchOpen(false)} />}
-        </div>
+        <div className="ml-auto"></div>
       </div>
     </div>
   );
@@ -239,13 +220,6 @@ function ProfileLayout({ module, onModuleChange, groups, value, onChange, childr
     <div>
       <ProfilePageNav module={module} onModuleChange={onModuleChange} groups={groups} value={value} onChange={onChange} />
       <div className="mt-4">
-        {/* page heading */}
-        <div className="flex items-center gap-2.5 mb-4">
-          <span className="w-9 h-9 rounded-xl bg-vnd-primary-50 text-vnd-primary-700 flex items-center justify-center shrink-0"><Icon name={(activeItem && activeItem.icon) || activeGroup.icon} size={20} /></span>
-          <div className="min-w-0">
-            <h2 className="font-display text-headline-sm text-vnd-primary-900 leading-tight truncate">{(activeItem && activeItem.label) || activeGroup.label}</h2>
-          </div>
-        </div>
         {children}
       </div>
     </div>
@@ -360,9 +334,11 @@ function ClientProfileScreen({ id, onBack }) {
 
       {/* Tab content */}
       <div className="px-6 pb-5">
-        {tab === "nangluc" && window.TabNangLuc && <window.TabNangLuc client={client} p={p} />}
-        {tab === "hanhdong" && window.TabHanhDong && <window.TabHanhDong client={client} p={p} />}
-        {tab === "ketnoi" && window.TabKetNoi && <window.TabKetNoi client={client} p={p} />}
+        {(tab === "nangluc" || tab === "hanhdong" || tab === "ketnoi") && (
+          <div className="flex items-center justify-center px-6 py-24">
+            <h1 className="font-display text-headline-lg text-vnd-primary-900">Coming soon</h1>
+          </div>
+        )}
         {tab === "taisan" && window.TabTaiSan && <window.TabTaiSan client={client} p={p} />}
       </div>
 
