@@ -123,15 +123,7 @@
       { id: "report", label: "Báo cáo tài sản", icon: "assessment", items: [
         { id: "rpt:asset",      section: "Tổng quan",   label: "Báo cáo tài sản",             icon: "account_balance_wallet" },
         { id: "rpt:portfolio",  section: "Tổng quan",   label: "Danh mục tài sản",            icon: "donut_small" },
-        { id: "rpt:growth",     section: "Tổng quan",   label: "Báo cáo tăng trưởng tài sản", icon: "show_chart" },
-        { id: "rpt:debtstatus", section: "Nợ",          label: "Báo cáo trạng thái tài khoản nợ", icon: "health_and_safety" },
-        { id: "rpt:debt",       section: "Nợ",          label: "Báo cáo nợ",                  icon: "summarize" },
-        { id: "rpt:secbal",     section: "Chứng khoán", label: "Báo cáo số dư chứng khoán",   icon: "inventory" },
-        { id: "rpt:matched",    section: "Chứng khoán", label: "Báo cáo kết quả khớp lệnh",   icon: "receipt_long" }
-      ] },
-      { id: "prod", label: "Quản lý sản phẩm", icon: "inventory_2", items: [
-        { id: "prod:services", label: "Sản phẩm dịch vụ", icon: "category" },
-        { id: "prod:dcash",    label: "Dcashgrow",        icon: "savings" }
+        { id: "rpt:debtstatus", section: "Nợ",          label: "Báo cáo trạng thái tài khoản nợ", icon: "health_and_safety" }
       ] }
     ];
     const [active, setActive] = useState("rpt:asset");
