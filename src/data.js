@@ -538,14 +538,41 @@ const CP_DATA = {
   assetReport: {
     assets: [
       { label: "TIỀN", cat: true, children: [
-        { label: "Tiền sẵn sàng giao dịch", children: [ { label: "Tiền mặt khả dụng", value: 560 }, { label: "Chờ thanh toán", value: 20 } ] },
-        { label: "Tiền chờ về", children: [ { label: "Bán chờ về (T+1.5)", value: 22 } ] },
-        { label: "Tiền phong tỏa", children: [ { label: "Phong tỏa đặt lệnh", value: 10 } ] }
+        { label: "Tiền sẵn sàng giao dịch", children: [
+          { label: "Số dư tiền tài khoản phái sinh", value: 0 },
+          { label: "Số dư tiền tài khoản cơ sở", value: 560 }
+        ] },
+        { label: "Tiền chờ về", children: [
+          { label: "Tiền cổ tức chờ về", value: 8 },
+          { label: "Tiền bán chờ về chưa ứng", children: [
+            { label: "Tiền bán khớp", value: 22 },
+            { label: "Tiền bán đã ứng trước", value: 0 }
+          ] },
+          { label: "Tiền chờ về trái phiếu", value: 12 },
+          { label: "Tiền ký quỹ phái sinh chờ rút", value: 0 },
+          { label: "Tiền chờ về khác", value: 0 }
+        ] },
+        { label: "Tiền phong tỏa", children: [
+          { label: "Tiền mua chờ khớp", value: 10 },
+          { label: "Tiền chờ ký quỹ phái sinh", value: 0 },
+          { label: "Tiền phong tỏa khác", value: 0 }
+        ] }
       ] },
       { label: "DCASH GROW", cat: true, value: 320 },
       { label: "HEALTH - TÀI CHÍNH AN SINH", cat: true, children: [
         { label: "Tích sản hưu trí", value: 150 },
-        { label: "Đầu tư tạo thu nhập cố định", children: [ { label: "Trái phiếu doanh nghiệp", value: 180 }, { label: "Trái phiếu chính phủ", value: 60 } ] },
+        { label: "Đầu tư tạo thu nhập cố định", children: [
+          { label: "Tiền chờ giao dịch", children: [
+            { label: "Số dư tiền qua đêm", value: 0 },
+            { label: "Số dư tiền khác", value: 0 }
+          ] },
+          { label: "Quỹ mở trái phiếu", value: 0 },
+          { label: "Trái phiếu", children: [
+            { label: "DBond", value: 180 },
+            { label: "VBond", value: 60 },
+            { label: "Trái phiếu khác", value: 0 }
+          ] }
+        ] },
         { label: "DSIP hưu trí", value: 60 },
         { label: "DSIP dự phòng", value: 40 }
       ] },
@@ -558,7 +585,10 @@ const CP_DATA = {
       ] },
       { label: "GROWTH - ĐẦU TƯ TĂNG TRƯỞNG", cat: true, children: [
         { label: "Chứng chỉ quỹ ETF", value: 130 },
-        { label: "Cổ phiếu, chứng chỉ quỹ đóng", children: [ { label: "FPT", value: 556 }, { label: "HPG", value: 334 }, { label: "MWG", value: 214 } ] },
+        { label: "Cổ phiếu, chứng chỉ quỹ đóng", children: [
+          { label: "Danh mục cổ phiếu", value: 1104 },
+          { label: "Quyền chờ về", value: 0 }
+        ] },
         { label: "Chứng quyền", value: 25 },
         { label: "DSIP Tăng trưởng", value: 85 },
         { label: "Chứng khoán phái sinh", value: 40 }
@@ -568,12 +598,33 @@ const CP_DATA = {
       { label: "NỢ DỰ KIẾN TĂNG CUỐI NGÀY", cat: true, value: 0 },
       { label: "DƯ NỢ THẤU CHI PHÁI SINH", cat: true, value: 0 },
       { label: "GIAO DỊCH KÝ QUỸ", cat: true, children: [
-        { label: "Dư nợ gốc", children: [ { label: "Dư nợ margin", value: 850 } ] },
-        { label: "Lãi vay", children: [ { label: "Lãi dồn tích", value: 18 } ] }
+        { label: "Dư nợ gốc", children: [
+          { label: "+ DMargin", value: 850 },
+          { label: "+ Smart T+", value: 0 },
+          { label: "+ T10", value: 0 },
+          { label: "+ T15", value: 0 },
+          { label: "+ Khác", value: 0 }
+        ] },
+        { label: "Lãi vay", children: [
+          { label: "+ DMargin", value: 18 },
+          { label: "+ Smart T+", value: 0 },
+          { label: "+ T10", value: 0 },
+          { label: "+ T15", value: 0 },
+          { label: "+ Khác", value: 0 }
+        ] }
       ] },
       { label: "PHÍ", cat: true, children: [
         { label: "Phí lưu ký phải trả", value: 0.3 },
-        { label: "Phí phái sinh", children: [ { label: "Phí mở/đóng vị thế", value: 0 } ] }
+        { label: "Phí phái sinh", children: [
+          { label: "Phí quản lý tài sản ký quỹ", children: [
+            { label: "Phí ký quỹ cộng dồn", value: 0 },
+            { label: "Phí ký quỹ đến hạn", value: 0 }
+          ] }
+        ] },
+        { label: "Phí giao dịch", value: 0 },
+        { label: "Phí trả sở", value: 0 },
+        { label: "Phí vị thế", value: 0 },
+        { label: "Thuế thu nhập", value: 0 }
       ] }
     ]
   },
