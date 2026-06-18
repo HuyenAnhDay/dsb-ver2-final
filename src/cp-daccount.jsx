@@ -705,11 +705,6 @@
               </button>
             </div>
           </div>
-          {/* Summary */}
-          <div className="mt-3 space-y-0.5 text-[12.5px]">
-            <div className="flex"><span className="text-on-surface-variant w-[160px]">Tỉ lệ thực tế(%):</span><span className="font-mono">102.2</span></div>
-            <div className="flex"><span className="text-on-surface-variant w-[160px]">Tổng giá trị TSĐB (VND):</span><span className="font-mono">1,123,234,567</span></div>
-          </div>
         </div>
 
         {/* Table */}
